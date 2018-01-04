@@ -40,17 +40,18 @@ public class ProjectManager {
 
     /**
      * @param project The project to be unloaded.
-     * True: The project was successfully unloaded from memory and saved to the database.
-     * False: There was an error when trying to remove the project.
-     */
+     * */
     public static void unload(Project project) {
         if (projects.remove(project.getId(), project)) {
              service.save(project);
         }
     }
 
-    // For debugging purposes.
-    public static List<Project> getAllProjects() {
+    /**
+     *
+     * @return All projects that have active clients.
+     */
+    public static List<Project> getLiveProjects() {
         return new ArrayList<>(projects.values());
     }
 }

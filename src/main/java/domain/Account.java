@@ -2,33 +2,33 @@ package domain;
 
 import java.io.Serializable;
 
-final class Account implements Serializable {
+public final class Account implements Serializable {
 
     private String username;
     private String password;
     private String email;
 
-    Account(String username, String password, String email) {
+    public Account(String username, String password, String email) {
         this.username = username;
         this.password = password;
         this.email = email;
     }
 
-    Account(String username) {
+    public Account(String username) {
         this.username = username;
     }
 
     //region getters & setters
 
-    String getUsername() {
+    public String getUsername() {
         return username;
     }
 
-    String getPassword() {
+    public String getPassword() {
         return password;
     }
 
-    String getEmail() {
+    public String getEmail() {
         return email;
     }
 
