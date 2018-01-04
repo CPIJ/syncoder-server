@@ -1,15 +1,20 @@
 package domain;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public final class Project {
+public final class Project implements Serializable {
 
     private String id;
     private String content;
     private Map<String, Client> clients;
+
+    public Project() {
+        clients = new HashMap<>();
+    }
 
     public Project(String id) {
         this.id = id;
