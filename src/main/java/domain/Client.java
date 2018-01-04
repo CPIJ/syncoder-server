@@ -11,30 +11,24 @@ public final class Client implements Serializable {
 
     }
 
+    public Client(String username, String password, String email) {
+        id = "";
+        account = new Account(username, password, email);
+    }
+
     @Override
     public int hashCode() {
         return id.hashCode();
     }
 
     //region getters & setters
-
     public String getId() {
         return id;
     }
 
-    public String getUsername() {
-        return account.getUsername();
+    public Account getAccount() {
+        return account;
     }
-
-    public String getEmail() {
-        return account.getEmail();
-    }
-
-    public String getPassword() {
-        return account.getPassword();
-    }
-
-
     //endregion
 
 }
