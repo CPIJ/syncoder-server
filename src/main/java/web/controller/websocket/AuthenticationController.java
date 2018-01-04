@@ -6,9 +6,11 @@ import data.service.IAuthenticationService;
 import domain.Account;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.stereotype.Controller;
 
 import java.util.List;
 
+@Controller
 public class AuthenticationController {
     private IAuthenticationService service = new AuthenticationService(new MySqlAuthenticationRepository());
 

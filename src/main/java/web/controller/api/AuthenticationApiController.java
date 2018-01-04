@@ -15,7 +15,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/authentication")
-public class AuthenticationController {
+public class AuthenticationApiController {
 
     private IAuthenticationService service = new AuthenticationService(new MySqlAuthenticationRepository());
 
@@ -46,16 +46,11 @@ public class AuthenticationController {
     public ResponseEntity forgotPassword(@RequestParam String email) {
         if (email == null) return BadRequest("No email provided!");
 
-        Optional<Account> account = service
-                .getAllAccounts()
-                .stream()
-                .filter(a -> a.getEmail().equals(email))
-                .findFirst();
+        Account account = service.find(email);
 
-        //noinspection OptionalIsPresent
-        if (!account.isPresent()) return BadRequest("No user found with this email.");
+        if (account == null) return BadRequest("No user found with this email.");
 
-        return Ok(account.get().getPassword());
+        return Ok(account.getPassword());
     }
 
     @RequestMapping(value = "/", method = RequestMethod.PUT, consumes = "application/json")

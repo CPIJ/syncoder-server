@@ -1,6 +1,5 @@
 package data.repository;
 
-import com.mysql.cj.api.mysqla.result.Resultset;
 import util.Config;
 import domain.Project;
 import java.sql.Connection;

@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/project")
-public class ProjectController {
+public class ProjectApiController {
 
     private IProjectService service;
 
-    public ProjectController() {
+    public ProjectApiController() {
         service = new ProjectService(new MySqlProjectRepository());
     }
 
