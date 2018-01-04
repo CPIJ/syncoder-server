@@ -25,7 +25,7 @@ public class MySqlAuthenticationRepository implements AuthenticationRepository {
 
     @Override
     public Client login(String email, String password) {
-        String query = "SELECT * FROM account WHERE email LIKE ? AND password LIKE ?";
+        String query = "SELECT * FROM account WHERE email = ? AND password = ?";
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, email);
@@ -41,6 +41,7 @@ public class MySqlAuthenticationRepository implements AuthenticationRepository {
                 );
             }
 
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -49,8 +50,8 @@ public class MySqlAuthenticationRepository implements AuthenticationRepository {
     }
 
     @Override
-    public boolean register(Client client) {
-        if (getAllAccounts().stream().anyMatch(a -> a.getEmail().equals(client.getAccount().getEmail()))) {
+    public boolean register(Account account) {
+        if (getAllAccounts().stream().anyMatch(a -> a.getEmail().equals(account.getEmail()))) {
             return false;
         }
 
@@ -58,9 +59,9 @@ public class MySqlAuthenticationRepository implements AuthenticationRepository {
         int affectedRows = -1;
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, client.getAccount().getUsername());
-            statement.setString(2, client.getAccount().getPassword());
-            statement.setString(3, client.getAccount().getEmail());
+            statement.setString(1, account.getUsername());
+            statement.setString(2, account.getPassword());
+            statement.setString(3, account.getEmail());
 
             affectedRows = statement.executeUpdate();
         } catch (SQLException e) {

@@ -1,5 +1,7 @@
 package domain;
 
+import util.Id;
+
 import java.io.Serializable;
 
 public final class Client implements Serializable {
@@ -12,7 +14,7 @@ public final class Client implements Serializable {
     }
 
     public Client(String username, String password, String email) {
-        id = "";
+        id = Id.newId();
         account = new Account(username, password, email);
     }
 

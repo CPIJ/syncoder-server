@@ -20,8 +20,8 @@ public class AuthenticationService implements IAuthenticationService {
     }
 
     @Override
-    public boolean register(Client client) {
-        return repository.register(client);
+    public boolean register(Account account) {
+        return repository.register(account);
     }
 
     @Override
@@ -35,7 +35,8 @@ public class AuthenticationService implements IAuthenticationService {
                 .getAllAccounts()
                 .stream()
                 .anyMatch(c ->
-                        c.getUsername().equals(client.getUsername())
-                                && c.getPassword().equals(client.getPassword()));
+                        c.getUsername().equals(client.getAccount().getUsername())
+                                && c.getPassword().equals(client.getAccount().getPassword())
+                                && c.getEmail().equals(client.getAccount().getEmail()));
     }
 }

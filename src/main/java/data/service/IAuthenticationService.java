@@ -5,8 +5,8 @@ import domain.Client;
 import java.util.List;
 
 public interface IAuthenticationService {
-    Client login(String username, String password);
-    boolean register(Client client);
+    Client login(String email, String password);
+    boolean register(Account account);
     List<Account> getAllAccounts();
     boolean isAuthorized(Client client);
 }
