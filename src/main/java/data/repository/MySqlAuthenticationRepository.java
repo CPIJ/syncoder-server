@@ -51,9 +51,7 @@ public class MySqlAuthenticationRepository implements AuthenticationRepository {
 
     @Override
     public boolean register(Account account) {
-        if (getAllAccounts().stream().anyMatch(a -> a.getEmail().equals(account.getEmail()))) {
-            return false;
-        }
+        if (find(account.getEmail()) != null) return false;
 
         String query = "INSERT INTO account (username, password, email) VALUES(?,?,?)";
         int affectedRows = -1;
@@ -91,5 +89,27 @@ public class MySqlAuthenticationRepository implements AuthenticationRepository {
         }
 
         return accounts;
+    }
+
+    @Override
+    public Account find(String email) {
+        String query = "SELECT * FROM account WHERE email = ?";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, email);
+
+            ResultSet set = statement.executeQuery();
+
+            if (set.next()) {
+                return new Account(
+                        set.getString("username"),
+                        set.getString("password"),
+                        set.getString("email")
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }

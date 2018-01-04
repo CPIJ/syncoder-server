@@ -31,12 +31,18 @@ public class AuthenticationService implements IAuthenticationService {
 
     @Override
     public boolean isAuthorized(Client client) {
-        return repository
-                .getAllAccounts()
-                .stream()
-                .anyMatch(c ->
-                        c.getUsername().equals(client.getAccount().getUsername())
-                                && c.getPassword().equals(client.getAccount().getPassword())
-                                && c.getEmail().equals(client.getAccount().getEmail()));
+        Account account = repository.find(client.getAccount().getEmail());
+        Account clientAccount = client.getAccount();
+
+        return account != null
+                && clientAccount.getEmail().equals(account.getEmail())
+                && clientAccount.getPassword().equals(account.getPassword())
+                && clientAccount.getUsername().equals(account.getUsername());
+
+    }
+
+    @Override
+    public Account find(String email) {
+        return repository.find(email);
     }
 }

@@ -13,6 +13,11 @@ public final class Client implements Serializable {
 
     }
 
+    public Client(Account account) {
+        id = Id.newId();
+        this.account = account;
+    }
+
     public Client(String username, String password, String email) {
         id = Id.newId();
         account = new Account(username, password, email);

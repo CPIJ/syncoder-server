@@ -9,4 +9,5 @@ public interface IAuthenticationService {
     boolean register(Account account);
     List<Account> getAllAccounts();
     boolean isAuthorized(Client client);
+    Account find(String email);
 }
