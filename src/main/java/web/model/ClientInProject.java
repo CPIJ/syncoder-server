@@ -1,16 +1,18 @@
 package web.model;
 
+import java.util.UUID;
+
 public class ClientInProject {
 
-    private String clientId;
+    private UUID clientId;
     private String email;
     private String projectId;
 
-    public String getClientId() {
+    public UUID getClientId() {
         return clientId;
     }
 
-    public void setClientId(String clientId) {
+    public void setClientId(UUID clientId) {
         this.clientId = clientId;
     }
 

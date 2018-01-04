@@ -1,12 +1,11 @@
 package domain;
 
-import util.Id;
-
 import java.io.Serializable;
+import java.util.UUID;
 
 public final class Client implements Serializable {
 
-    private String id;
+    private UUID id;
     private Account account;
 
     public Client() {
@@ -14,12 +13,12 @@ public final class Client implements Serializable {
     }
 
     public Client(Account account) {
-        id = Id.newId();
+        id = UUID.randomUUID();
         this.account = account;
     }
 
     public Client(String username, String password, String email) {
-        id = Id.newId();
+        id = UUID.randomUUID();
         account = new Account(username, password, email);
     }
 
@@ -29,7 +28,7 @@ public final class Client implements Serializable {
     }
 
     //region getters & setters
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
