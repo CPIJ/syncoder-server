@@ -1,5 +1,8 @@
 package domain;
 
+import data.repository.MySqlProjectRepository;
+import data.service.ProjectService;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,7 +11,7 @@ import java.util.Map;
 public class ProjectManager {
 
     private static final Map<String, Project> projects = new HashMap<>();
-    // private static final ProjectService service = new ProjectService(new MysqlProjectRepository());
+     private static final ProjectService service = new ProjectService(new MySqlProjectRepository());
 
     /**
      * @param projectId The ID associated with the project.
@@ -24,7 +27,7 @@ public class ProjectManager {
             return project;
         }
 
-        // project = service.find(projectId);
+        project = service.find(projectId);
 
         if (project == null) {
             project = new Project(projectId);
@@ -42,12 +45,12 @@ public class ProjectManager {
      */
     public static void unload(Project project) {
         if (projects.remove(project.getId(), project)) {
-            // service.save(project);
+             service.save(project);
         }
     }
 
     // For debugging purposes.
     public static List<Project> getAllProjects() {
-        return new ArrayList<Project>(projects.values());
+        return new ArrayList<>(projects.values());
     }
 }
