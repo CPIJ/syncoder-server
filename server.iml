@@ -71,5 +71,6 @@
     <orderEntry type="library" scope="TEST" name="Maven: org.ow2.asm:asm:5.0.3" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.25" level="project" />
     <orderEntry type="library" name="Maven: mysql:mysql-connector-java:8.0.8-dmr" level="project" />
+    <orderEntry type="library" name="Maven: nl.fontys:rmi:1.0" level="project" />
   </component>
 </module>

@@ -1,22 +1,24 @@
 package web.controller.websocket;
 
-import data.repository.MySqlAuthenticationRepository;
-import data.service.AuthenticationService;
-import data.service.IAuthenticationService;
-import domain.Account;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
+import rmi.fontys.IRemotePropertyListener;
 
-import java.util.List;
+import java.beans.PropertyChangeEvent;
+import java.rmi.RemoteException;
 
 @Controller
-public class AuthenticationController {
-    private IAuthenticationService service = new AuthenticationService(new MySqlAuthenticationRepository());
+public class AuthenticationController implements IRemotePropertyListener {
+    private final SimpMessagingTemplate template;
 
-    @MessageMapping("user/after-registration")
-    @SendTo("/topic/after-registration")
-    public List<Account> getAllClients(){
-        return service.getAllAccounts();
+    @Autowired
+    public AuthenticationController(SimpMessagingTemplate template) {
+        this.template = template;
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent propertyChangeEvent) throws RemoteException {
+        template.convertAndSend("/topic/onRegister", propertyChangeEvent.getNewValue());
     }
 }

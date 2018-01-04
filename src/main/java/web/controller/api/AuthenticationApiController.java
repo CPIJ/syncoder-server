@@ -5,13 +5,10 @@ import data.service.AuthenticationService;
 import data.service.IAuthenticationService;
 import domain.Account;
 import domain.Client;
-import domain.ProjectManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import web.model.LoginRequest;
-
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/authentication")
@@ -43,19 +40,22 @@ public class AuthenticationApiController {
     }
 
     @RequestMapping(value = "/forgotPassword", method = RequestMethod.GET)
-    public ResponseEntity forgotPassword(@RequestParam String email) {
+    public ResponseEntity<Object> forgotPassword(@RequestParam String email) {
         if (email == null) return BadRequest("No email provided!");
-
         Account account = service.find(email);
 
         if (account == null) return BadRequest("No user found with this email.");
 
-        return Ok(account.getPassword());
+        return Ok(new Object() {
+            public final String password = account.getPassword();
+        });
     }
 
     @RequestMapping(value = "/", method = RequestMethod.PUT, consumes = "application/json")
     public ResponseEntity register(@RequestBody Account account) {
-        if (service.register(account)) return Ok("Account was registered!");
+        if (service.register(account)) return Ok(new Object(){
+            public final String message = "Success!";
+        });
 
         return BadRequest("An account with this email already exists.");
     }
@@ -67,9 +67,9 @@ public class AuthenticationApiController {
     }
 
     //region helper methods
-        private <T> ResponseEntity<T> Ok(T body) {
-            return new ResponseEntity<>(body, HttpStatus.OK);
-        }
+    private <T> ResponseEntity<T> Ok(T body) {
+        return new ResponseEntity<>(body, HttpStatus.OK);
+    }
 
     private ResponseEntity Ok() {
         return new ResponseEntity(HttpStatus.OK);
