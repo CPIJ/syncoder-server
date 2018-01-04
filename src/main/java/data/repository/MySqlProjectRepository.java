@@ -1,11 +1,14 @@
 package data.repository;
 
-import config.Properties;
+import com.mysql.cj.api.mysqla.result.Resultset;
+import util.Config;
 import domain.Project;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MySqlProjectRepository implements ProjectRepository {
@@ -13,7 +16,7 @@ public class MySqlProjectRepository implements ProjectRepository {
     private Connection connection;
 
     public MySqlProjectRepository() {
-        connection = Properties.getConnection(Properties.Db.PROJECT);
+        connection = Config.getConnection(Config.Db.PROJECT);
 
         if (connection == null) {
             throw new IllegalArgumentException("No database found!");
@@ -80,5 +83,25 @@ public class MySqlProjectRepository implements ProjectRepository {
         }
 
         return null;
+    }
+
+    @Override
+    public List<Project> getAll() {
+        List<Project> projects = new ArrayList<>();
+
+        try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM project")) {
+            ResultSet set = statement.executeQuery();
+
+            while (set.next()) {
+                Project project = new Project(set.getString("id"));
+                project.setContent(set.getString("content"));
+
+                projects.add(project);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return projects;
     }
 }

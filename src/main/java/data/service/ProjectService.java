@@ -4,6 +4,8 @@ import data.repository.MySqlProjectRepository;
 import data.repository.ProjectRepository;
 import domain.Project;
 
+import java.util.List;
+
 public class ProjectService implements IProjectService {
 
     private final ProjectRepository repository;
@@ -20,5 +22,10 @@ public class ProjectService implements IProjectService {
     @Override
     public Project find(String projectId) {
         return repository.find(projectId);
+    }
+
+    @Override
+    public List<Project> getAll() {
+        return repository.getAll();
     }
 }

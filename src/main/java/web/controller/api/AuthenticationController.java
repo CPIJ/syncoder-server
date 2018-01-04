@@ -1,4 +1,4 @@
-package web.controller;
+package web.controller.api;
 
 import data.repository.MySqlAuthenticationRepository;
 import data.service.AuthenticationService;
@@ -14,11 +14,12 @@ import web.model.LoginRequest;
 import java.util.Optional;
 
 @RestController
-public class ApiController {
+@RequestMapping("/authentication")
+public class AuthenticationController {
 
     private IAuthenticationService service = new AuthenticationService(new MySqlAuthenticationRepository());
 
-    @RequestMapping(value = "/authorization", method = RequestMethod.POST, consumes = "application/json")
+    @RequestMapping(value = "/", method = RequestMethod.POST, consumes = "application/json")
     public ResponseEntity login(@RequestBody LoginRequest request) {
 
         if (request.getPassword() == null || request.getEmail() == null) {
@@ -34,14 +35,14 @@ public class ApiController {
         return Ok(client);
     }
 
-    @RequestMapping(value = "/authorization/isAuthorized", method = RequestMethod.POST, consumes = "application/json")
+    @RequestMapping(value = "/isAuthorized", method = RequestMethod.POST, consumes = "application/json")
     public ResponseEntity isAuthorized(@RequestBody Client client) {
         if (client == null) return BadRequest();
 
         return Ok(service.isAuthorized(client));
     }
 
-    @RequestMapping(value = "/authorization/forgotPassword", method = RequestMethod.GET)
+    @RequestMapping(value = "/forgotPassword", method = RequestMethod.GET)
     public ResponseEntity forgotPassword(@RequestParam String email) {
         if (email == null) return BadRequest("No email provided!");
 
@@ -57,27 +58,23 @@ public class ApiController {
         return Ok(account.get().getPassword());
     }
 
-    @RequestMapping(value = "/authorization", method = RequestMethod.PUT, consumes = "application/json")
+    @RequestMapping(value = "/", method = RequestMethod.PUT, consumes = "application/json")
     public ResponseEntity register(@RequestBody Account account) {
         if (service.register(account)) return Ok("Account was registered!");
 
         return BadRequest("An account with this email already exists.");
     }
 
-    @RequestMapping(value = "/projects/live")
-    public ResponseEntity getLiveProjects() {
-        return Ok(ProjectManager.getLiveProjects());
-    }
 
-    @RequestMapping(value = "/authorization/users", method = RequestMethod.GET)
+    @RequestMapping(value = "/account/all", method = RequestMethod.GET)
     public ResponseEntity getAllUsers() {
         return Ok(service.getAllAccounts());
     }
 
     //region helper methods
-    private <T> ResponseEntity<T> Ok(T body) {
-        return new ResponseEntity<>(body, HttpStatus.OK);
-    }
+        private <T> ResponseEntity<T> Ok(T body) {
+            return new ResponseEntity<>(body, HttpStatus.OK);
+        }
 
     private ResponseEntity Ok() {
         return new ResponseEntity(HttpStatus.OK);
