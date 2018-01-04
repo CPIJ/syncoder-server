@@ -8,13 +8,35 @@ import domain.Client;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import rmi.fontys.RemotePublisher;
+import util.Config;
+import web.controller.websocket.WebSocketConfig;
 import web.model.LoginRequest;
+
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.util.Arrays;
 
 @RestController
 @RequestMapping("/authentication")
 public class AuthenticationApiController {
 
     private IAuthenticationService service = new AuthenticationService(new MySqlAuthenticationRepository());
+    private RemotePublisher publisher;
+
+    public AuthenticationApiController() throws RemoteException {
+        publisher = new RemotePublisher();
+
+        String prop = Config.get("rmi", "registerProperty");
+        int port = Integer.parseInt(Config.get("rmi", "port"));
+        String property = Config.get("rmi", "registerPublisher");
+
+        publisher.registerProperty(prop);
+        Registry registry = LocateRegistry.createRegistry(port);
+        registry.rebind(property, publisher);
+    }
 
     @RequestMapping(value = "/", method = RequestMethod.POST, consumes = "application/json")
     public ResponseEntity login(@RequestBody LoginRequest request) {
@@ -52,10 +74,19 @@ public class AuthenticationApiController {
     }
 
     @RequestMapping(value = "/", method = RequestMethod.PUT, consumes = "application/json")
-    public ResponseEntity register(@RequestBody Account account) {
-        if (service.register(account)) return Ok(new Object(){
-            public final String message = "Success!";
-        });
+    public ResponseEntity register(@RequestBody Account account) throws RemoteException {
+        if (service.register(account)) {
+
+            publisher.inform(
+                    Config.get("rmi", "registerProperty"),
+                    service.getAllAccounts(),
+                    service.getAllAccounts()
+            );
+
+            return Ok(new Object() {
+                public final String message = "Success!";
+            });
+        }
 
         return BadRequest("An account with this email already exists.");
     }

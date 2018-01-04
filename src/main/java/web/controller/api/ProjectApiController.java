@@ -8,14 +8,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import rmi.fontys.IRemotePublisherForListener;
+import rmi.fontys.RemotePublisher;
+
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 
 @RestController
 @RequestMapping("/project")
 public class ProjectApiController {
-
     private IProjectService service;
 
-    public ProjectApiController() {
+    public ProjectApiController() throws RemoteException {
         service = new ProjectService(new MySqlProjectRepository());
     }
 

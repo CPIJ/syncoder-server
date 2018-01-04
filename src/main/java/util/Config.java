@@ -13,8 +13,8 @@ public class Config {
         PROJECT
     }
 
-    public static String get(String key) {
-        InputStream inputStream = Config.class.getResourceAsStream("/connectionStrings.properties");
+    public static String get(String from, String key) {
+        InputStream inputStream = Config.class.getResourceAsStream("/" + from + ".properties");
         java.util.Properties props = new java.util.Properties();
 
         try {
@@ -39,18 +39,18 @@ public class Config {
     }
 
     private static Connection getProjectConnection() {
-        String dbUrl = get("project_database");
+        String dbUrl = get("connectionStrings", "project_database");
         return getConnection(dbUrl);
     }
 
     private static Connection getAuthConnection() {
-        String dbUrl = get("authentication_database");
+        String dbUrl = get("connectionStrings", "authentication_database");
         return getConnection(dbUrl);
     }
 
     private static Connection getConnection(String dbUrl) {
-        String user = get("username");
-        String password = get("password");
+        String user = get("connectionStrings", "username");
+        String password = get("connectionStrings", "password");
 
         try {
             return DriverManager.getConnection(dbUrl, user, password);
