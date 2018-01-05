@@ -9,15 +9,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rmi.fontys.RemotePublisher;
-import util.Config;
-import web.controller.websocket.WebSocketConfig;
+import application.AppConfig;
 import web.model.LoginRequest;
 
-import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.Arrays;
 
 @RestController
 @RequestMapping("/authentication")
@@ -27,20 +24,11 @@ public class AuthenticationApiController {
     private RemotePublisher publisher;
 
     public AuthenticationApiController() throws RemoteException {
-        publisher = new RemotePublisher();
-
-        String prop = Config.get("rmi", "registerProperty");
-        int port = Integer.parseInt(Config.get("rmi", "port"));
-        String property = Config.get("rmi", "registerPublisher");
-
-        publisher.registerProperty(prop);
-        Registry registry = LocateRegistry.createRegistry(port);
-        registry.rebind(property, publisher);
+        configureRmi();
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST, consumes = "application/json")
     public ResponseEntity login(@RequestBody LoginRequest request) {
-
         if (request.getPassword() == null || request.getEmail() == null) {
             return BadRequest("No username and/or password provided!");
         }
@@ -78,13 +66,13 @@ public class AuthenticationApiController {
         if (service.register(account)) {
 
             publisher.inform(
-                    Config.get("rmi", "registerProperty"),
+                    AppConfig.get("rmi", "registerProperty"),
                     service.getAllAccounts(),
                     service.getAllAccounts()
             );
 
             return Ok(new Object() {
-                public final String message = "Success!";
+                public final String message = "You can now login with your new account!";
             });
         }
 
@@ -112,6 +100,18 @@ public class AuthenticationApiController {
 
     private ResponseEntity BadRequest() {
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
+    }
+
+    private void configureRmi() throws RemoteException {
+        publisher = new RemotePublisher();
+
+        String prop = AppConfig.get("rmi", "registerProperty");
+        int port = Integer.parseInt(AppConfig.get("rmi", "port"));
+        String property = AppConfig.get("rmi", "registerPublisher");
+
+        publisher.registerProperty(prop);
+        Registry registry = LocateRegistry.createRegistry(port);
+        registry.rebind(property, publisher);
     }
     //endregion
 }

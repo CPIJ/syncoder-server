@@ -1,6 +1,6 @@
 package data.repository;
 
-import util.Config;
+import application.AppConfig;
 import domain.Project;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,7 +15,7 @@ public class MySqlProjectRepository implements ProjectRepository {
     private Connection connection;
 
     public MySqlProjectRepository() {
-        connection = Config.getConnection(Config.Db.PROJECT);
+        connection = AppConfig.getConnection(AppConfig.Db.PROJECT);
 
         if (connection == null) {
             throw new IllegalArgumentException("No database found!");

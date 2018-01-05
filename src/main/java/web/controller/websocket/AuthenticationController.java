@@ -5,10 +5,9 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import rmi.fontys.IRemotePropertyListener;
 import rmi.fontys.IRemotePublisherForListener;
-import util.Config;
+import application.AppConfig;
 
 import java.beans.PropertyChangeEvent;
-import java.lang.reflect.Array;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -16,7 +15,7 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 
 @Controller
-public class AuthenticationController extends UnicastRemoteObject implements IRemotePropertyListener  {
+public class AuthenticationController extends UnicastRemoteObject implements IRemotePropertyListener {
 
     private SimpMessagingTemplate template;
 
@@ -24,18 +23,19 @@ public class AuthenticationController extends UnicastRemoteObject implements IRe
     public AuthenticationController(SimpMessagingTemplate template) throws RemoteException, NotBoundException {
         this.template = template;
 
-        Registry registry = LocateRegistry.getRegistry(Integer.parseInt(Config.get("rmi", "port")));
-        IRemotePublisherForListener publisher = (IRemotePublisherForListener) registry.lookup(Config.get("rmi", "registerPublisher"));
-
-        try {
-            publisher.subscribeRemoteListener(this, Config.get("rmi", "registerProperty"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        configureRmi();
     }
 
     @Override
     public void propertyChange(PropertyChangeEvent propertyChangeEvent) throws RemoteException {
         template.convertAndSend("/topic/onRegister", propertyChangeEvent.getNewValue());
     }
+
+    //region helper methods
+    private void configureRmi() throws RemoteException, NotBoundException {
+        Registry registry = LocateRegistry.getRegistry(Integer.parseInt(AppConfig.get("rmi", "port")));
+        IRemotePublisherForListener publisher = (IRemotePublisherForListener) registry.lookup(AppConfig.get("rmi", "registerPublisher"));
+        publisher.subscribeRemoteListener(this, AppConfig.get("rmi", "registerProperty"));
+    }
+    //endregion
 }

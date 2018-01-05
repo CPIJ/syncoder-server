@@ -17,10 +17,6 @@ public final class Account implements Serializable {
         this.email = email;
     }
 
-    public Account(String username) {
-        this.username = username;
-    }
-
     //region getters & setters
 
     public String getUsername() {

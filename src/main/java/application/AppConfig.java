@@ -1,4 +1,4 @@
-package util;
+package application;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -6,7 +6,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class Config {
+public class AppConfig {
 
     public enum Db {
         AUTHENTICATION,
@@ -14,7 +14,7 @@ public class Config {
     }
 
     public static String get(String from, String key) {
-        InputStream inputStream = Config.class.getResourceAsStream("/" + from + ".properties");
+        InputStream inputStream = AppConfig.class.getResourceAsStream("/" + from + ".properties");
         java.util.Properties props = new java.util.Properties();
 
         try {

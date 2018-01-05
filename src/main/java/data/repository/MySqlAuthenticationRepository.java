@@ -1,6 +1,6 @@
 package data.repository;
 
-import util.Config;
+import application.AppConfig;
 import domain.Account;
 import domain.Client;
 
@@ -16,7 +16,7 @@ public class MySqlAuthenticationRepository implements AuthenticationRepository {
     private Connection connection;
 
     public MySqlAuthenticationRepository() {
-        connection = Config.getConnection(Config.Db.AUTHENTICATION);
+        connection = AppConfig.getConnection(AppConfig.Db.AUTHENTICATION);
 
         if (connection == null) {
             throw new IllegalArgumentException("No database found!");
