@@ -7,6 +7,7 @@ public final class Client implements Serializable {
 
     private UUID id;
     private Account account;
+    private int openWindows;
 
     public Client() {
 
@@ -22,6 +23,11 @@ public final class Client implements Serializable {
         account = new Account(username, password, email);
     }
 
+    public Client(UUID id, Account account) {
+        this.id = id;
+        this.account = account;
+    }
+
     @Override
     public int hashCode() {
         return id.hashCode();
@@ -34,6 +40,19 @@ public final class Client implements Serializable {
 
     public Account getAccount() {
         return account;
+    }
+
+    public int getOpenWindows() {
+        return openWindows;
+    }
+
+    public void addWindow() {
+        openWindows++;
+    }
+
+    public void removeWindow() {
+        if (openWindows != 0)
+            openWindows--;
     }
     //endregion
 

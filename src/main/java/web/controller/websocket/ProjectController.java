@@ -11,10 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
-import web.model.ClientInProject;
-
-import java.util.ArrayList;
-import java.util.List;
+import web.model.ClientChange;
+import web.model.ProjectChange;
 
 @Controller
 public class ProjectController {
@@ -28,46 +26,59 @@ public class ProjectController {
     }
 
     @MessageMapping("/project/onClosed")
-    public void onClosed(ClientInProject clientInProject) {
-        Project project = ProjectManager.load(clientInProject.getProjectId());
-        Client client = project.getClient(clientInProject.getClientId());
+    public void onClosed(ClientChange clientChange) {
+        Project project = ProjectManager.find(clientChange.getProjectId());
+
+        if (project == null) return;
+
+        Client client = project.getClient(clientChange.getClientId());
+        client.removeWindow();
+
+        if (client.getOpenWindows() != 0) return;
+
         project.removeClient(client);
 
-        if (!project.hasClients()) {
+        if (project.hasClients()) {
+            clientStateChange(project, client);
+        } else {
             ProjectManager.unload(project);
-            return;
         }
-
-        clientCountChanged(project);
     }
 
     @MessageMapping("/project/onOpened")
-    public void onOpened(ClientInProject clientInProject) {
-        Project project = ProjectManager.load(clientInProject.getProjectId());
-        Account account = service.find(clientInProject.getEmail());
-        Client client = new Client(account);
+    public void onOpened(ClientChange clientChange) {
+        Project project = ProjectManager.load(clientChange.getProjectId());
+        Client client = project.getClient(clientChange.getClientId());
 
-        project.addClient(client);
+        if (client == null) {
+            Account account = service.find(clientChange.getEmail());
+            client = new Client(clientChange.getClientId(), account);
+            project.addClient(client);
+        }
 
-        clientCountChanged(project);
+        client.addWindow();
+
+        template.convertAndSend("/topic/project/onJoin/" + client.getId(), project);
+        clientStateChange(project, client);
     }
 
     @MessageMapping("/project/change/{room}")
-    public void onChange(Project project) {
-        ProjectManager
-                .load(project.getId())
-                .setContent(project.getContent());
+    public void onChange(ProjectChange p) {
+        Project changedProject = ProjectManager.load(p.getId());
+        changedProject.setContent(p.getContent());
 
-        template.convertAndSend("/topic/project/onchange/" + project.getId(), project);
-    }
-
-    //region helper methods
-    private void clientCountChanged(Project project) {
-        template.convertAndSend("/topic/project/onClientCountChange/" + project.getId(), new Object() {
-            public final String id = project.getId();
-            public final String content = project.getContent();
-            public final List<Client> clients = new ArrayList<>(project.getClients());
+        template.convertAndSend("/topic/project/onchange/" + p.getId(), new Object(){
+            public final Project project = changedProject;
+            public final Client sender = changedProject.getClient(p.getClientId());
         });
     }
-    //endregion
+
+    private void clientStateChange(Project p, Client c) {
+        template.convertAndSend("/topic/project/onClientCountChange/" + p.getId(), new Object(){
+            public final Project project = p;
+            public final Client sender = c;
+        });
+    }
+
 }
+

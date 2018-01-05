@@ -7,15 +7,15 @@ public final class Project implements Serializable {
 
     private String id;
     private String content;
-    private Map<UUID, Client> clients;
+    private boolean isTemplate;
+    private Map<UUID, Client> clients = new HashMap<>();
 
     public Project() {
-        clients = new HashMap<>();
+
     }
 
     public Project(String id) {
         this.id = id;
-        clients = new HashMap<>();
     }
 
     public void addClient(Client client) {
@@ -55,6 +55,14 @@ public final class Project implements Serializable {
 
     public Client getClient(UUID clientId) {
         return clients.get(clientId);
+    }
+
+    public boolean getIsTemplate() {
+        return isTemplate;
+    }
+
+    public void setIsTemplate(boolean isTemplate) {
+        this.isTemplate = isTemplate;
     }
 
     //endregion

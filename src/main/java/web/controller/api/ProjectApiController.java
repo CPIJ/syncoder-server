@@ -34,6 +34,11 @@ public class ProjectApiController {
         return Ok(service.getAll());
     }
 
+    @RequestMapping(value = "/template")
+    public ResponseEntity getAllTemplates() {
+        return Ok(service.getAllTemplates());
+    }
+
     //region helper methods
     private <T> ResponseEntity<T> Ok(T body) {
         return new ResponseEntity<>(body, HttpStatus.OK);

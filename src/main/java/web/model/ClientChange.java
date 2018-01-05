@@ -2,7 +2,7 @@ package web.model;
 
 import java.util.UUID;
 
-public class ClientInProject {
+public class ClientChange {
 
     private UUID clientId;
     private String email;

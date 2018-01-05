@@ -74,6 +74,7 @@ public class MySqlProjectRepository implements ProjectRepository {
             if (resultSet.next()) {
                 project = new Project(resultSet.getString("id"));
                 project.setContent(resultSet.getString("content"));
+                project.setIsTemplate(resultSet.getBoolean("isTemplate"));
             }
             return project;
 
@@ -89,11 +90,12 @@ public class MySqlProjectRepository implements ProjectRepository {
         List<Project> projects = new ArrayList<>();
 
         try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM project")) {
-            ResultSet set = statement.executeQuery();
+            ResultSet result = statement.executeQuery();
 
-            while (set.next()) {
-                Project project = new Project(set.getString("id"));
-                project.setContent(set.getString("content"));
+            while (result.next()) {
+                Project project = new Project(result.getString("id"));
+                project.setContent(result.getString("content"));
+                project.setIsTemplate(result.getBoolean("isTemplate"));
 
                 projects.add(project);
             }

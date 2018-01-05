@@ -5,6 +5,7 @@ import data.repository.ProjectRepository;
 import domain.Project;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ProjectService implements IProjectService {
 
@@ -27,5 +28,14 @@ public class ProjectService implements IProjectService {
     @Override
     public List<Project> getAll() {
         return repository.getAll();
+    }
+
+    @Override
+    public List<Project> getAllTemplates() {
+        return repository
+                .getAll()
+                .stream()
+                .filter(Project::getIsTemplate)
+                .collect(Collectors.toList());
     }
 }
