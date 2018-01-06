@@ -1,30 +1,30 @@
 package web.controller.api;
 
-import data.repository.MySqlAuthenticationRepository;
-import data.service.AuthenticationService;
+import application.Properties;
 import data.service.IAuthenticationService;
 import domain.Account;
 import domain.Client;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import rmi.fontys.IRemotePublisherForListener;
 import rmi.fontys.RemotePublisher;
-import application.AppConfig;
 import web.model.LoginRequest;
 
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 
 @RestController
 @RequestMapping("/authentication")
 public class AuthenticationApiController {
 
-    private IAuthenticationService service = new AuthenticationService(new MySqlAuthenticationRepository());
-    private RemotePublisher publisher;
+    private final IAuthenticationService service;
+    private final RemotePublisher publisher;
 
-    public AuthenticationApiController() throws RemoteException {
-        configureRmi();
+    @Autowired
+    public AuthenticationApiController(IAuthenticationService service, RemotePublisher publisher) {
+        this.service = service;
+        this.publisher = publisher;
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST, consumes = "application/json")
@@ -66,7 +66,7 @@ public class AuthenticationApiController {
         if (service.register(account)) {
 
             publisher.inform(
-                    AppConfig.get("rmi", "registerProperty"),
+                    Properties.get("rmi", "registerProperty"),
                     service.getAllAccounts(),
                     service.getAllAccounts()
             );
@@ -100,18 +100,6 @@ public class AuthenticationApiController {
 
     private ResponseEntity BadRequest() {
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
-    }
-
-    private void configureRmi() throws RemoteException {
-        publisher = new RemotePublisher();
-
-        String prop = AppConfig.get("rmi", "registerProperty");
-        int port = Integer.parseInt(AppConfig.get("rmi", "port"));
-        String property = AppConfig.get("rmi", "registerPublisher");
-
-        publisher.registerProperty(prop);
-        Registry registry = LocateRegistry.createRegistry(port);
-        registry.rebind(property, publisher);
     }
     //endregion
 }

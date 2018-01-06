@@ -1,6 +1,6 @@
 package data.repository;
 
-import application.AppConfig;
+import application.Properties;
 import domain.Project;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,12 +10,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MySqlProjectRepository implements ProjectRepository {
+public class MySqlProjectRepository implements IProjectRepository {
 
     private Connection connection;
 
     public MySqlProjectRepository() {
-        connection = AppConfig.getConnection(AppConfig.Db.PROJECT);
+        connection = Properties.getConnection(Properties.Db.PROJECT);
 
         if (connection == null) {
             throw new IllegalArgumentException("No database found!");
@@ -23,7 +23,7 @@ public class MySqlProjectRepository implements ProjectRepository {
     }
 
     @Override
-    public boolean save(Project project) {
+    public void save(Project project) {
         boolean projectAlreadyExists = this.find(project.getId()) != null;
         int affectedRows = -1;
 
@@ -43,7 +43,6 @@ public class MySqlProjectRepository implements ProjectRepository {
             }
         }
 
-        return affectedRows > 0;
     }
 
     private int update(Project project) {

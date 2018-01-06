@@ -1,6 +1,6 @@
 package data.repository;
 
-import application.AppConfig;
+import application.Properties;
 import domain.Account;
 import domain.Client;
 
@@ -11,12 +11,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MySqlAuthenticationRepository implements AuthenticationRepository {
+public class MySqlAuthenticationRepository implements IAuthenticationRepository {
 
     private Connection connection;
 
     public MySqlAuthenticationRepository() {
-        connection = AppConfig.getConnection(AppConfig.Db.AUTHENTICATION);
+        connection = Properties.getConnection(Properties.Db.AUTHENTICATION);
 
         if (connection == null) {
             throw new IllegalArgumentException("No database found!");

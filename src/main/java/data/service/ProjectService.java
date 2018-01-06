@@ -1,17 +1,20 @@
 package data.service;
 
-import data.repository.MySqlProjectRepository;
-import data.repository.ProjectRepository;
+import data.repository.IProjectRepository;
 import domain.Project;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Service
 public class ProjectService implements IProjectService {
 
-    private final ProjectRepository repository;
+    private final IProjectRepository repository;
 
-    public ProjectService(ProjectRepository repository) {
+    @Autowired
+    public ProjectService(IProjectRepository repository) {
         this.repository = repository;
     }
 

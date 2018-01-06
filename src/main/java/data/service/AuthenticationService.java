@@ -1,6 +1,6 @@
 package data.service;
 
-import data.repository.AuthenticationRepository;
+import data.repository.IAuthenticationRepository;
 import domain.Account;
 import domain.Client;
 
@@ -8,9 +8,9 @@ import java.util.List;
 
 public class AuthenticationService implements IAuthenticationService {
 
-    private AuthenticationRepository repository;
+    private IAuthenticationRepository repository;
 
-    public AuthenticationService(AuthenticationRepository repository) {
+    public AuthenticationService(IAuthenticationRepository repository) {
         this.repository = repository;
     }
 

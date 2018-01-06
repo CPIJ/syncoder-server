@@ -1,63 +1,63 @@
 package application;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import data.repository.IAuthenticationRepository;
+import data.repository.MySqlAuthenticationRepository;
+import data.repository.MySqlProjectRepository;
+import data.repository.IProjectRepository;
+import data.service.AuthenticationService;
+import data.service.IAuthenticationService;
+import data.service.IProjectService;
+import data.service.ProjectService;
+import domain.IProjectManager;
+import domain.ProjectManager;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import rmi.fontys.IRemotePublisherForListener;
+import rmi.fontys.RemotePublisher;
 
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+
+@Configuration
 public class AppConfig {
-
-    public enum Db {
-        AUTHENTICATION,
-        PROJECT
+    @Bean
+    public IProjectManager projectManager() {
+        return ProjectManager.instance();
     }
 
-    public static String get(String from, String key) {
-        InputStream inputStream = AppConfig.class.getResourceAsStream("/" + from + ".properties");
-        java.util.Properties props = new java.util.Properties();
-
-        try {
-            props.load(inputStream);
-            return props.getProperty(key);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return "";
+    @Bean
+    public IProjectService projectService(IProjectRepository repository) {
+        return new ProjectService(repository);
     }
 
-    public static Connection getConnection(Db db) {
-        switch (db) {
-            case AUTHENTICATION:
-                return getAuthConnection();
-            case PROJECT:
-                return getProjectConnection();
-            default:
-                return null;
-        }
+    @Bean
+    public IProjectRepository projectRepository() {
+        return new MySqlProjectRepository();
     }
 
-    private static Connection getProjectConnection() {
-        String dbUrl = get("connectionStrings", "project_database");
-        return getConnection(dbUrl);
+    @Bean
+    public IAuthenticationService authenticationService(IAuthenticationRepository repository) {
+        return new AuthenticationService(repository);
     }
 
-    private static Connection getAuthConnection() {
-        String dbUrl = get("connectionStrings", "authentication_database");
-        return getConnection(dbUrl);
+    @Bean
+    public IAuthenticationRepository authenticationRepository() {
+        return new MySqlAuthenticationRepository();
     }
 
-    private static Connection getConnection(String dbUrl) {
-        String user = get("connectionStrings", "username");
-        String password = get("connectionStrings", "password");
+    @Bean
+    public RemotePublisher remotePublisher() throws RemoteException {
+        RemotePublisher publisher = new RemotePublisher();
 
-        try {
-            return DriverManager.getConnection(dbUrl, user, password);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        String prop = Properties.get("rmi", "registerProperty");
+        int port = Integer.parseInt(Properties.get("rmi", "port"));
+        String property = Properties.get("rmi", "registerPublisher");
 
-        return null;
+        publisher.registerProperty(prop);
+        Registry registry = LocateRegistry.createRegistry(port);
+        registry.rebind(property, publisher);
+
+        return publisher;
     }
 }

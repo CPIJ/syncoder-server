@@ -3,30 +3,32 @@ package web.controller.api;
 import data.repository.MySqlProjectRepository;
 import data.service.IProjectService;
 import data.service.ProjectService;
+import domain.IProjectManager;
 import domain.ProjectManager;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import rmi.fontys.IRemotePublisherForListener;
-import rmi.fontys.RemotePublisher;
 
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 
 @RestController
 @RequestMapping("/project")
 public class ProjectApiController {
-    private IProjectService service;
+    private final IProjectService service;
+    private final IProjectManager projectManager;
 
-    public ProjectApiController() throws RemoteException {
-        service = new ProjectService(new MySqlProjectRepository());
+    @Autowired
+    public ProjectApiController(IProjectService service, IProjectManager projectManager) {
+        this.service = service;
+        this.projectManager = projectManager;
     }
 
     @RequestMapping(value = "/live")
     public ResponseEntity getLiveProjects() {
-        return Ok(ProjectManager.getLiveProjects());
+        return Ok(projectManager.getLiveProjects());
     }
 
     @RequestMapping(value = "/all")

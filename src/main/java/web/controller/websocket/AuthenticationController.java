@@ -5,7 +5,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import rmi.fontys.IRemotePropertyListener;
 import rmi.fontys.IRemotePublisherForListener;
-import application.AppConfig;
+import application.Properties;
 
 import java.beans.PropertyChangeEvent;
 import java.rmi.NotBoundException;
@@ -33,9 +33,9 @@ public class AuthenticationController extends UnicastRemoteObject implements IRe
 
     //region helper methods
     private void configureRmi() throws RemoteException, NotBoundException {
-        Registry registry = LocateRegistry.getRegistry(Integer.parseInt(AppConfig.get("rmi", "port")));
-        IRemotePublisherForListener publisher = (IRemotePublisherForListener) registry.lookup(AppConfig.get("rmi", "registerPublisher"));
-        publisher.subscribeRemoteListener(this, AppConfig.get("rmi", "registerProperty"));
+        Registry registry = LocateRegistry.getRegistry(Integer.parseInt(Properties.get("rmi", "port")));
+        IRemotePublisherForListener publisher = (IRemotePublisherForListener) registry.lookup(Properties.get("rmi", "registerPublisher"));
+        publisher.subscribeRemoteListener(this, Properties.get("rmi", "registerProperty"));
     }
     //endregion
 }

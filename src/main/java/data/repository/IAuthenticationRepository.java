@@ -5,7 +5,7 @@ import domain.Client;
 
 import java.util.List;
 
-public interface AuthenticationRepository {
+public interface IAuthenticationRepository {
     Client login(String email, String password);
     boolean register(Account account);
     List<Account> getAllAccounts();

@@ -6,6 +6,7 @@ import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
 @ComponentScan("web")
+@ComponentScan("application")
 public class App {
     public static void main(String[] args) {
         SpringApplication.run(App.class, args);

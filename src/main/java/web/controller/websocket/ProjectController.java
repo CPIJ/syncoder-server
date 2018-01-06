@@ -3,10 +3,7 @@ package web.controller.websocket;
 import data.repository.MySqlAuthenticationRepository;
 import data.service.AuthenticationService;
 import data.service.IAuthenticationService;
-import domain.Account;
-import domain.Client;
-import domain.Project;
-import domain.ProjectManager;
+import domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -16,18 +13,20 @@ import web.model.ProjectChange;
 
 @Controller
 public class ProjectController {
-
     private final SimpMessagingTemplate template;
-    private final IAuthenticationService service = new AuthenticationService(new MySqlAuthenticationRepository());
+    private final IAuthenticationService service;
+    private final IProjectManager projectManager;
 
     @Autowired
-    public ProjectController(SimpMessagingTemplate template) {
+    public ProjectController(SimpMessagingTemplate template, IAuthenticationService service, IProjectManager projectManager) {
         this.template = template;
+        this.projectManager = projectManager;
+        this.service = service;
     }
 
     @MessageMapping("/project/onClosed")
     public void onClosed(ClientChange clientChange) {
-        Project project = ProjectManager.find(clientChange.getProjectId());
+        Project project = projectManager.find(clientChange.getProjectId());
 
         if (project == null) return;
 
@@ -41,13 +40,13 @@ public class ProjectController {
         if (project.hasClients()) {
             clientStateChange(project, client);
         } else {
-            ProjectManager.unload(project);
+            projectManager.unload(project);
         }
     }
 
     @MessageMapping("/project/onOpened")
     public void onOpened(ClientChange clientChange) {
-        Project project = ProjectManager.load(clientChange.getProjectId());
+        Project project = projectManager.load(clientChange.getProjectId());
         Client client = project.getClient(clientChange.getClientId());
 
         if (client == null) {
@@ -64,7 +63,7 @@ public class ProjectController {
 
     @MessageMapping("/project/change/{room}")
     public void onChange(ProjectChange p) {
-        Project changedProject = ProjectManager.load(p.getId());
+        Project changedProject = projectManager.load(p.getId());
         changedProject.setContent(p.getContent());
 
         template.convertAndSend("/topic/project/onchange/" + p.getId(), new Object(){
