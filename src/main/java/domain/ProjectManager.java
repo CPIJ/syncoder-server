@@ -1,30 +1,35 @@
 package domain;
 
 import data.repository.MySqlProjectRepository;
+import data.service.IProjectService;
 import data.service.ProjectService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Service
 public class ProjectManager implements IProjectManager {
 
     private final Map<String, Project> projects;
-    private final ProjectService service;
-    private static ProjectManager instance;
+    private final IProjectService service;
+    private static IProjectManager instance;
 
-    private ProjectManager() {
-        service = new ProjectService(new MySqlProjectRepository());
+    private ProjectManager(IProjectService service) {
+        this.service = service;
         projects = new HashMap<>();
     }
 
-    public static ProjectManager instance() {
+    @Autowired
+    public static IProjectManager instance(IProjectService service) {
         if (instance == null) {
-            instance = new ProjectManager();
+            instance = new ProjectManager(service);
         }
 
         return instance;

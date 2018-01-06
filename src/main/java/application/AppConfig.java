@@ -4,12 +4,10 @@ import data.repository.IAuthenticationRepository;
 import data.repository.MySqlAuthenticationRepository;
 import data.repository.MySqlProjectRepository;
 import data.repository.IProjectRepository;
-import data.service.AuthenticationService;
-import data.service.IAuthenticationService;
-import data.service.IProjectService;
-import data.service.ProjectService;
+import data.service.*;
 import domain.IProjectManager;
 import domain.ProjectManager;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import rmi.fontys.IRemotePublisherForListener;
@@ -18,12 +16,13 @@ import rmi.fontys.RemotePublisher;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.sql.Connection;
 
 @Configuration
 public class AppConfig {
     @Bean
-    public IProjectManager projectManager() {
-        return ProjectManager.instance();
+    public IProjectManager projectManager(IProjectService service) {
+        return ProjectManager.instance(service);
     }
 
     @Bean
@@ -32,8 +31,8 @@ public class AppConfig {
     }
 
     @Bean
-    public IProjectRepository projectRepository() {
-        return new MySqlProjectRepository();
+    public IProjectRepository projectRepository(@Qualifier("project_db") Connection connection) {
+        return new MySqlProjectRepository(connection);
     }
 
     @Bean
@@ -42,22 +41,31 @@ public class AppConfig {
     }
 
     @Bean
-    public IAuthenticationRepository authenticationRepository() {
-        return new MySqlAuthenticationRepository();
+    public IAuthenticationRepository authenticationRepository(@Qualifier(value = "auth_db") Connection connection) {
+        return new MySqlAuthenticationRepository(connection);
+    }
+
+    @Bean(name = "auth_db")
+    public Connection connection() {
+        return Properties.getConnection(Properties.Db.AUTHENTICATION);
+    }
+
+    @Bean(name = "project_db")
+    public Connection projectConnection() {
+        return Properties.getConnection(Properties.Db.PROJECT);
     }
 
     @Bean
-    public RemotePublisher remotePublisher() throws RemoteException {
-        RemotePublisher publisher = new RemotePublisher();
-
-        String prop = Properties.get("rmi", "registerProperty");
+    public IRmiService rmiService() throws RemoteException {
         int port = Integer.parseInt(Properties.get("rmi", "port"));
-        String property = Properties.get("rmi", "registerPublisher");
+        String name = Properties.get("rmi", "registerPublisher");
+        String property = Properties.get("rmi", "registerProperty");
 
-        publisher.registerProperty(prop);
-        Registry registry = LocateRegistry.createRegistry(port);
-        registry.rebind(property, publisher);
+        return RmiService.instance(new RemotePublisher(), port, name, property);
+    }
 
-        return publisher;
+    @Bean(name = "property")
+    public String property() {
+        return Properties.get("rmi", "registerProperty");
     }
 }

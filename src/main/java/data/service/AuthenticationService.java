@@ -3,13 +3,17 @@ package data.service;
 import data.repository.IAuthenticationRepository;
 import domain.Account;
 import domain.Client;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class AuthenticationService implements IAuthenticationService {
 
     private IAuthenticationRepository repository;
 
+    @Autowired
     public AuthenticationService(IAuthenticationRepository repository) {
         this.repository = repository;
     }

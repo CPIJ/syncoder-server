@@ -3,6 +3,8 @@ package data.repository;
 import application.Properties;
 import domain.Account;
 import domain.Client;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,16 +13,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository
 public class MySqlAuthenticationRepository implements IAuthenticationRepository {
 
     private Connection connection;
 
-    public MySqlAuthenticationRepository() {
-        connection = Properties.getConnection(Properties.Db.AUTHENTICATION);
-
-        if (connection == null) {
-            throw new IllegalArgumentException("No database found!");
-        }
+    @Autowired
+    public MySqlAuthenticationRepository(Connection connection) {
+        this.connection = connection;
     }
 
     @Override

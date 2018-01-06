@@ -8,6 +8,8 @@ import java.sql.SQLException;
 
 public class Properties {
 
+    private String fileName;
+
     public enum Db {
         AUTHENTICATION,
         PROJECT

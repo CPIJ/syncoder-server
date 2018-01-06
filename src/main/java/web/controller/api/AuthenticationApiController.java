@@ -2,29 +2,32 @@ package web.controller.api;
 
 import application.Properties;
 import data.service.IAuthenticationService;
+import data.service.IRmiService;
 import domain.Account;
 import domain.Client;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import rmi.fontys.IRemotePublisherForListener;
 import rmi.fontys.RemotePublisher;
 import web.model.LoginRequest;
 
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 
 @RestController
 @RequestMapping("/authentication")
 public class AuthenticationApiController {
 
     private final IAuthenticationService service;
-    private final RemotePublisher publisher;
+    private final IRmiService rmiService;
 
     @Autowired
-    public AuthenticationApiController(IAuthenticationService service, RemotePublisher publisher) {
+    public AuthenticationApiController(IAuthenticationService service, IRmiService rmiService) throws RemoteException {
         this.service = service;
-        this.publisher = publisher;
+        this.rmiService = rmiService;
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST, consumes = "application/json")
@@ -62,12 +65,11 @@ public class AuthenticationApiController {
     }
 
     @RequestMapping(value = "/", method = RequestMethod.PUT, consumes = "application/json")
-    public ResponseEntity register(@RequestBody Account account) throws RemoteException {
+    public ResponseEntity register(@RequestBody Account account) throws RemoteException, NotBoundException {
         if (service.register(account)) {
 
-            publisher.inform(
+            rmiService.inform(
                     Properties.get("rmi", "registerProperty"),
-                    service.getAllAccounts(),
                     service.getAllAccounts()
             );
 

@@ -11,25 +11,10 @@ public class ClientChange {
     public UUID getClientId() {
         return clientId;
     }
-
-    public void setClientId(UUID clientId) {
-        this.clientId = clientId;
-    }
-
     public String getEmail() {
         return email;
     }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public String getProjectId() {
         return projectId;
     }
-
-    public void setProjectId(String projectId) {
-        this.projectId = projectId;
-    }
-
 }
