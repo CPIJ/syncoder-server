@@ -19,7 +19,7 @@ import java.sql.Connection;
 public class AppConfig {
     @Bean
     public IProjectManager projectManager(IProjectService service) {
-        return ProjectManager.instance(service);
+        return new ProjectManager(service);
     }
 
     @Bean
