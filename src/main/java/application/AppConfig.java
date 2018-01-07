@@ -10,12 +10,9 @@ import domain.ProjectManager;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import rmi.fontys.IRemotePublisherForListener;
 import rmi.fontys.RemotePublisher;
 
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 import java.sql.Connection;
 
 @Configuration
@@ -36,8 +33,8 @@ public class AppConfig {
     }
 
     @Bean
-    public IAuthenticationService authenticationService(IAuthenticationRepository repository) {
-        return new AuthenticationService(repository);
+    public IAuthenticationService authenticationService(IAuthenticationRepository repository, IRmiService service) {
+        return new RmiAuthenticationService(repository, service);
     }
 
     @Bean

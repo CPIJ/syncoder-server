@@ -22,12 +22,10 @@ import java.rmi.registry.Registry;
 public class AuthenticationApiController {
 
     private final IAuthenticationService service;
-    private final IRmiService rmiService;
 
     @Autowired
-    public AuthenticationApiController(IAuthenticationService service, IRmiService rmiService) throws RemoteException {
+    public AuthenticationApiController(IAuthenticationService service) throws RemoteException {
         this.service = service;
-        this.rmiService = rmiService;
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST, consumes = "application/json")
@@ -67,12 +65,6 @@ public class AuthenticationApiController {
     @RequestMapping(value = "/", method = RequestMethod.PUT, consumes = "application/json")
     public ResponseEntity register(@RequestBody Account account) throws RemoteException, NotBoundException {
         if (service.register(account)) {
-
-            rmiService.inform(
-                    Properties.get("rmi", "registerProperty"),
-                    service.getAllAccounts()
-            );
-
             return Ok(new Object() {
                 public final String message = "You can now login with your new account!";
             });
@@ -80,7 +72,6 @@ public class AuthenticationApiController {
 
         return BadRequest("An account with this email already exists.");
     }
-
 
     @RequestMapping(value = "/account/all", method = RequestMethod.GET)
     public ResponseEntity getAllUsers() {
@@ -90,10 +81,6 @@ public class AuthenticationApiController {
     //region helper methods
     private <T> ResponseEntity<T> Ok(T body) {
         return new ResponseEntity<>(body, HttpStatus.OK);
-    }
-
-    private ResponseEntity Ok() {
-        return new ResponseEntity(HttpStatus.OK);
     }
 
     private <T> ResponseEntity<T> BadRequest(T body) {

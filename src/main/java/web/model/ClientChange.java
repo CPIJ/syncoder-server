@@ -8,6 +8,15 @@ public class ClientChange {
     private String email;
     private String projectId;
 
+    public ClientChange() {
+    }
+
+    public ClientChange(UUID clientId, String email, String projectId) {
+        this.clientId = clientId;
+        this.email = email;
+        this.projectId = projectId;
+    }
+
     public UUID getClientId() {
         return clientId;
     }

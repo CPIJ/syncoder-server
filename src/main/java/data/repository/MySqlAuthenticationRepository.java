@@ -1,6 +1,5 @@
 package data.repository;
 
-import application.Properties;
 import domain.Account;
 import domain.Client;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +36,8 @@ public class MySqlAuthenticationRepository implements IAuthenticationRepository 
                 return new Client(
                         set.getString("username"),
                         set.getString("password"),
-                        set.getString("email")
+                        set.getString("email"),
+                        set.getBoolean("isAdmin")
                 );
             }
 
@@ -53,13 +53,14 @@ public class MySqlAuthenticationRepository implements IAuthenticationRepository 
     public boolean register(Account account) {
         if (find(account.getEmail()) != null) return false;
 
-        String query = "INSERT INTO account (username, password, email) VALUES(?,?,?)";
+        String query = "INSERT INTO account (username, password, email, isAdmin) VALUES(?,?,?,?)";
         int affectedRows = -1;
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, account.getUsername());
             statement.setString(2, account.getPassword());
             statement.setString(3, account.getEmail());
+            statement.setBoolean(4, account.getIsAdmin());
 
             affectedRows = statement.executeUpdate();
         } catch (SQLException e) {
@@ -81,8 +82,8 @@ public class MySqlAuthenticationRepository implements IAuthenticationRepository 
                 accounts.add(new Account(
                         set.getString("username"),
                         set.getString("password"),
-                        set.getString("email")
-                ));
+                        set.getString("email"),
+                        set.getBoolean("isAdmin")));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -103,8 +104,8 @@ public class MySqlAuthenticationRepository implements IAuthenticationRepository 
                 return new Account(
                         set.getString("username"),
                         set.getString("password"),
-                        set.getString("email")
-                );
+                        set.getString("email"),
+                        set.getBoolean("isAdmin"));
             }
         } catch (SQLException e) {
             e.printStackTrace();

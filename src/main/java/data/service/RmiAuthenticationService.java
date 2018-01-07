@@ -1,21 +1,26 @@
 package data.service;
 
+import application.Properties;
 import data.repository.IAuthenticationRepository;
 import domain.Account;
 import domain.Client;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.util.List;
 
 @Service
-public class AuthenticationService implements IAuthenticationService {
+public class RmiAuthenticationService implements IAuthenticationService {
 
     private IAuthenticationRepository repository;
+    private IRmiService rmiService;
 
     @Autowired
-    public AuthenticationService(IAuthenticationRepository repository) {
+    public RmiAuthenticationService(IAuthenticationRepository repository, IRmiService rmiService) {
         this.repository = repository;
+        this.rmiService = rmiService;
     }
 
     @Override
@@ -25,7 +30,20 @@ public class AuthenticationService implements IAuthenticationService {
 
     @Override
     public boolean register(Account account) {
-        return repository.register(account);
+        if (repository.register(account)) {
+            try {
+                rmiService.inform(
+                        Properties.get("rmi", "registerProperty"),
+                        getAllAccounts()
+                );
+
+                return true;
+            } catch (RemoteException | NotBoundException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return false;
     }
 
     @Override

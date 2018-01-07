@@ -13,9 +13,9 @@ public final class Client implements Serializable {
 
     }
 
-    public Client(String username, String password, String email) {
+    public Client(String username, String password, String email, boolean isAdmin) {
         id = UUID.randomUUID();
-        account = new Account(username, password, email);
+        account = new Account(username, password, email, isAdmin);
     }
 
     public Client(UUID id, Account account) {

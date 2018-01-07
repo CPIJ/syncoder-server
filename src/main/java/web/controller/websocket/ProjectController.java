@@ -1,7 +1,5 @@
 package web.controller.websocket;
 
-import data.repository.MySqlAuthenticationRepository;
-import data.service.AuthenticationService;
 import data.service.IAuthenticationService;
 import domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +8,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import web.model.ClientChange;
 import web.model.ProjectChange;
+import web.model.StateChange;
 
 @Controller
 public class ProjectController {
@@ -58,26 +57,22 @@ public class ProjectController {
         client.addWindow();
 
         template.convertAndSend("/topic/project/onJoin/" + client.getId(), project);
-        clientStateChange(project, client);
+
+        if (project.getClients().size() > 1) {
+            clientStateChange(project, client);
+        }
     }
 
     @MessageMapping("/project/change/{room}")
-    public void onChange(ProjectChange p) {
-        Project changedProject = projectManager.load(p.getId());
-        changedProject.setContent(p.getContent());
+    public void onChange(ProjectChange change) {
+        Project project = projectManager.load(change.getId());
+        project.setContent(change.getContent());
 
-        template.convertAndSend("/topic/project/onchange/" + p.getId(), new Object(){
-            public final Project project = changedProject;
-            public final Client sender = changedProject.getClient(p.getClientId());
-        });
+        template.convertAndSend("/topic/project/onchange/" + change.getId(), new StateChange(project, project.getClient(change.getClientId())));
     }
 
     private void clientStateChange(Project p, Client c) {
-        template.convertAndSend("/topic/project/onClientCountChange/" + p.getId(), new Object(){
-            public final Project project = p;
-            public final Client sender = c;
-        });
+        template.convertAndSend("/topic/project/onClientCountChange/" + p.getId(), new StateChange(p, c));
     }
-
 }
 
