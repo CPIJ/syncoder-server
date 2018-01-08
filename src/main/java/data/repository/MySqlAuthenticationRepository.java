@@ -40,8 +40,6 @@ public class MySqlAuthenticationRepository implements IAuthenticationRepository 
                         set.getBoolean("isAdmin")
                 );
             }
-
-
         } catch (SQLException e) {
             e.printStackTrace();
         }

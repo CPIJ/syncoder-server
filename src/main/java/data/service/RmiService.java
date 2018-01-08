@@ -16,32 +16,41 @@ import java.rmi.registry.Registry;
 public class RmiService implements IRmiService {
 
     private Registry registry;
-    private static IRmiService instance;
-
-    private RmiService(RemotePublisher publisher, int port, String name, String prop) throws RemoteException {
-        this.registry = LocateRegistry.createRegistry(port);
-        registry.rebind(name, publisher);
-        publisher.registerProperty(prop);
-    }
 
     @Autowired
-    public static IRmiService instance(RemotePublisher publisher, int port, String name, String prop) throws RemoteException {
-        if (instance == null) {
-            instance = new RmiService(publisher, port, name, prop);
+    public RmiService(RemotePublisher publisher, Registry registry) throws RemoteException {
+        String name = Properties.get("rmi", "registerPublisher");
+        String property = Properties.get("rmi", "registerProperty");
+
+        this.registry = registry;
+
+        registry.rebind(name, publisher);
+        publisher.registerProperty(property);
+    }
+
+    @Override
+    public boolean subscribe(String property, IRemotePropertyListener listener) {
+        try {
+            IRemotePublisherForListener publisher = (IRemotePublisherForListener) this.registry.lookup(Properties.get("rmi", "registerPublisher"));
+            publisher.subscribeRemoteListener(listener, property);
+
+            return true;
+        } catch (RemoteException | NotBoundException e) {
+            e.printStackTrace();
+            return false;
         }
-
-        return instance;
     }
 
     @Override
-    public void subscribe(String property, IRemotePropertyListener listener) throws RemoteException, NotBoundException {
-        IRemotePublisherForListener publisher = (IRemotePublisherForListener) this.registry.lookup(Properties.get("rmi", "registerPublisher"));
-        publisher.subscribeRemoteListener(listener, property);
-    }
+    public boolean inform(String property, Object data) {
+        try {
+            RemotePublisher publisher = (RemotePublisher) this.registry.lookup(Properties.get("rmi", "registerPublisher"));
+            publisher.inform(property, data, data);
 
-    @Override
-    public void inform(String property, Object data) throws RemoteException, NotBoundException {
-        RemotePublisher publisher = (RemotePublisher) this.registry.lookup(Properties.get("rmi", "registerPublisher"));
-        publisher.inform(property, data, data);
+            return true;
+        } catch (RemoteException | NotBoundException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

@@ -30,20 +30,8 @@ public class RmiAuthenticationService implements IAuthenticationService {
 
     @Override
     public boolean register(Account account) {
-        if (repository.register(account)) {
-            try {
-                rmiService.inform(
-                        Properties.get("rmi", "registerProperty"),
-                        getAllAccounts()
-                );
-
-                return true;
-            } catch (RemoteException | NotBoundException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return false;
+        return repository.register(account) &&
+                rmiService.inform(Properties.get("rmi", "registerProperty"), getAllAccounts());
     }
 
     @Override

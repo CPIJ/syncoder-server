@@ -12,7 +12,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import rmi.fontys.RemotePublisher;
 
+import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.sql.Connection;
 
 @Configuration
@@ -53,12 +56,26 @@ public class AppConfig {
     }
 
     @Bean
-    public IRmiService rmiService() throws RemoteException {
-        int port = Integer.parseInt(Properties.get("rmi", "port"));
-        String name = Properties.get("rmi", "registerPublisher");
-        String property = Properties.get("rmi", "registerProperty");
+    public IRmiService rmiService(RemotePublisher publisher, Registry registry) throws RemoteException {
+        return new RmiService(publisher, registry);
+    }
 
-        return RmiService.instance(new RemotePublisher(), port, name, property);
+    @Bean
+    public RemotePublisher remotePublisher() throws RemoteException {
+        return new RemotePublisher();
+    }
+
+    @Bean
+    public Registry registry() throws RemoteException {
+        int port = Integer.parseInt(Properties.get("rmi", "port"));
+
+        Registry registry = LocateRegistry.getRegistry(port);
+
+        if (registry == null) {
+            registry = LocateRegistry.createRegistry(port);
+        }
+
+        return registry;
     }
 
     @Bean(name = "property")
