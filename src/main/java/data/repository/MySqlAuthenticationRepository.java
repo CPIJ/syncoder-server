@@ -5,10 +5,7 @@ import domain.Client;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,10 +46,8 @@ public class MySqlAuthenticationRepository implements IAuthenticationRepository 
 
     @Override
     public boolean register(Account account) {
-        if (find(account.getEmail()) != null) return false;
-
         String query = "INSERT INTO account (username, password, email, isAdmin) VALUES(?,?,?,?)";
-        int affectedRows = -1;
+        int affectedRows;
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, account.getUsername());
@@ -62,10 +57,10 @@ public class MySqlAuthenticationRepository implements IAuthenticationRepository 
 
             affectedRows = statement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            return false;
         }
 
-        return affectedRows != -1;
+        return affectedRows > 0;
     }
 
     @Override
@@ -93,6 +88,7 @@ public class MySqlAuthenticationRepository implements IAuthenticationRepository 
     @Override
     public Account find(String email) {
         String query = "SELECT * FROM account WHERE email = ?";
+
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, email);
 

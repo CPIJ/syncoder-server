@@ -9,9 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
 
 public class ProjectServiceTest {
 
@@ -25,17 +24,32 @@ public class ProjectServiceTest {
     }
 
     @Test
-    public void save_isCalled_andPassedToTheRepository() {
-        service.save(null);
+    public void save_projectDoesNotYetExist_insertIsCalled() {
+        Project project = new Project("test");
+        when(repository.find(anyString())).thenReturn(null);
 
-        verify(repository).save(null);
+        service.save(project);
+
+        verify(repository).insert(project);
+        verify(repository, never()).update(project);
+    }
+
+    @Test
+    public void save_projectAlreadyExists_updateIsCalled() {
+        Project project = new Project("test");
+        when(repository.find(anyString())).thenReturn(project);
+
+        service.save(project);
+
+        verify(repository).update(project);
+        verify(repository, never()).insert(project);
     }
 
     @Test
     public void find_isCalled_andPassedToTheRepository() {
         service.find("");
 
-        verify(repository).find("");
+        verify(repository).find(anyString());
     }
 
     @Test

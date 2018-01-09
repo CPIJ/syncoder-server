@@ -7,15 +7,13 @@ import domain.Client;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.rmi.NotBoundException;
-import java.rmi.RemoteException;
 import java.util.List;
 
 @Service
 public class RmiAuthenticationService implements IAuthenticationService {
 
-    private IAuthenticationRepository repository;
-    private IRmiService rmiService;
+    private final IAuthenticationRepository repository;
+    private final IRmiService rmiService;
 
     @Autowired
     public RmiAuthenticationService(IAuthenticationRepository repository, IRmiService rmiService) {
@@ -31,7 +29,7 @@ public class RmiAuthenticationService implements IAuthenticationService {
     @Override
     public boolean register(Account account) {
         return repository.register(account) &&
-                rmiService.inform(Properties.get("rmi", "registerProperty"), getAllAccounts());
+                rmiService.inform(new Properties().get("rmi", "registerProperty"), getAllAccounts());
     }
 
     @Override

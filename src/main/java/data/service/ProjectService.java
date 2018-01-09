@@ -20,7 +20,13 @@ public class ProjectService implements IProjectService {
 
     @Override
     public void save(Project project) {
-        repository.save(project);
+        boolean projectAlreadyExists = repository.find(project.getId()) != null;
+
+        if (projectAlreadyExists) {
+            repository.update(project);
+        } else {
+            repository.insert(project);
+        }
     }
 
     @Override

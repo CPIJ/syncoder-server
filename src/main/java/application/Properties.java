@@ -1,23 +1,35 @@
 package application;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+@Service
 public class Properties {
 
-    private String fileName;
+    private final java.util.Properties props;
+
+    @Autowired
+    public Properties(java.util.Properties props) {
+        this.props = props;
+    }
+
+    public Properties() {
+        props = new java.util.Properties();
+    }
 
     public enum Db {
         AUTHENTICATION,
         PROJECT
     }
 
-    public static String get(String from, String key) {
+    public String get(String from, String key) {
         InputStream inputStream = Properties.class.getResourceAsStream("/" + from + ".properties");
-        java.util.Properties props = new java.util.Properties();
 
         try {
             props.load(inputStream);
@@ -29,7 +41,7 @@ public class Properties {
         return "";
     }
 
-    public static Connection getConnection(Db db) {
+    public Connection getConnection(Db db) {
         switch (db) {
             case AUTHENTICATION:
                 return getAuthConnection();
@@ -40,17 +52,17 @@ public class Properties {
         }
     }
 
-    private static Connection getProjectConnection() {
+    Connection getProjectConnection() {
         String dbUrl = get("connectionStrings", "project_database");
         return getConnection(dbUrl);
     }
 
-    private static Connection getAuthConnection() {
+    Connection getAuthConnection() {
         String dbUrl = get("connectionStrings", "authentication_database");
         return getConnection(dbUrl);
     }
 
-    private static Connection getConnection(String dbUrl) {
+    Connection getConnection(String dbUrl) {
         String user = get("connectionStrings", "username");
         String password = get("connectionStrings", "password");
 

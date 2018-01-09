@@ -1,21 +1,16 @@
 package web.controller.api;
 
-import application.Properties;
 import data.service.IAuthenticationService;
-import data.service.IRmiService;
 import domain.Account;
 import domain.Client;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import rmi.fontys.RemotePublisher;
 import web.model.LoginRequest;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 
 @RestController
 @RequestMapping("/authentication")

@@ -8,7 +8,7 @@ public final class Project implements Serializable {
     private String id;
     private String content;
     private boolean isTemplate;
-    private Map<UUID, Client> clients = new HashMap<>();
+    private final Map<UUID, Client> clients = new HashMap<>();
 
     public Project() {
 
@@ -28,11 +28,6 @@ public final class Project implements Serializable {
 
     public boolean hasClients() {
         return clients.size() > 0;
-    }
-
-    @Override
-    public String toString() {
-        return id;
     }
 
     //region getters & setters

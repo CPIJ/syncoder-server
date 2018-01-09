@@ -2,9 +2,7 @@ package data.service;
 
 import org.junit.Before;
 import org.junit.Test;
-import rmi.fontys.IPropertyListener;
 import rmi.fontys.IRemotePropertyListener;
-import rmi.fontys.IRemotePublisherForListener;
 import rmi.fontys.RemotePublisher;
 
 import java.rmi.NotBoundException;
@@ -12,8 +10,6 @@ import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
 
 import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 public class RmiServiceTest {

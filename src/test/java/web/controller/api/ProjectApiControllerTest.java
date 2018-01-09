@@ -3,23 +3,15 @@ package web.controller.api;
 import data.service.IProjectService;
 import data.service.ProjectService;
 import domain.IProjectManager;
-import domain.Project;
 import domain.ProjectManager;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
-import static org.mockito.internal.verification.VerificationModeFactory.times;
 
 
 public class ProjectApiControllerTest {

@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import rmi.fontys.RemotePublisher;
 
-import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -47,17 +46,17 @@ public class AppConfig {
 
     @Bean(name = "auth_db")
     public Connection connection() {
-        return Properties.getConnection(Properties.Db.AUTHENTICATION);
+        return new Properties().getConnection(Properties.Db.AUTHENTICATION);
     }
 
     @Bean(name = "project_db")
     public Connection projectConnection() {
-        return Properties.getConnection(Properties.Db.PROJECT);
+        return new Properties().getConnection(Properties.Db.PROJECT);
     }
 
     @Bean
-    public IRmiService rmiService(RemotePublisher publisher, Registry registry) throws RemoteException {
-        return new RmiService(publisher, registry);
+    public IRmiService rmiService(RemotePublisher publisher) throws RemoteException {
+        return new RmiService(publisher);
     }
 
     @Bean
@@ -65,21 +64,13 @@ public class AppConfig {
         return new RemotePublisher();
     }
 
-    @Bean
-    public Registry registry() throws RemoteException {
-        int port = Integer.parseInt(Properties.get("rmi", "port"));
-
-        Registry registry = LocateRegistry.getRegistry(port);
-
-        if (registry == null) {
-            registry = LocateRegistry.createRegistry(port);
-        }
-
-        return registry;
-    }
-
     @Bean(name = "property")
     public String property() {
-        return Properties.get("rmi", "registerProperty");
+        return new Properties().get("rmi", "registerProperty");
+    }
+
+    @Bean
+    public java.util.Properties properties() {
+        return new java.util.Properties();
     }
 }

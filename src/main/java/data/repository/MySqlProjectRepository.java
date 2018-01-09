@@ -14,7 +14,7 @@ import java.util.List;
 @Repository
 public class MySqlProjectRepository implements IProjectRepository {
 
-    private Connection connection;
+    private final Connection connection;
 
     @Autowired
     public MySqlProjectRepository(Connection connection) {
@@ -22,34 +22,41 @@ public class MySqlProjectRepository implements IProjectRepository {
     }
 
     @Override
-    public void save(Project project) {
-        boolean projectAlreadyExists = this.find(project.getId()) != null;
+    public boolean insert(Project project) {
+        int rowsAffected = 0;
 
-        if (!projectAlreadyExists) {
-            try (PreparedStatement statement = connection.prepareStatement("INSERT INTO project VALUES(?, ?, ?)")) {
+        try (PreparedStatement statement = connection.prepareStatement("INSERT INTO project VALUES(?, ?, ?)")) {
 
-                statement.setString(1, project.getId());
-                statement.setString(2, project.getContent());
-                statement.setBoolean(3, false);
+            statement.setString(1, project.getId());
+            statement.setString(2, project.getContent());
+            statement.setBoolean(3, false);
 
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        } else {
-            update(project);
+            rowsAffected = statement.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+
+        return rowsAffected > 0;
     }
 
-    private void update(Project project) {
+    @Override
+    public boolean update(Project project) {
+        int rowsAffected = 0;
+
         try (PreparedStatement statement = connection.prepareStatement("UPDATE project SET content = ? WHERE id LIKE ?")) {
             statement.setString(1, project.getContent());
             statement.setString(2, project.getId());
 
             statement.executeUpdate();
 
+            rowsAffected = statement.executeUpdate();
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        return rowsAffected > 0;
     }
 
     @Override
