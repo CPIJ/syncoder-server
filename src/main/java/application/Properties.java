@@ -67,6 +67,7 @@ public class Properties {
         String password = get("connectionStrings", "password");
 
         try {
+            System.out.println("Connecting to db: " + dbUrl);
             return DriverManager.getConnection(dbUrl, user, password);
         } catch (SQLException e) {
             e.printStackTrace();
