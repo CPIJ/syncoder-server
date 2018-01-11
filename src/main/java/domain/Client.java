@@ -28,6 +28,12 @@ public final class Client implements Serializable {
         return id.hashCode();
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        return id.getClass() == obj.getClass()
+                && id.equals(obj);
+    }
+
     //region getters & setters
     public UUID getId() {
         return id;

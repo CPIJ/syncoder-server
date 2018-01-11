@@ -33,7 +33,7 @@ public class ProjectApiControllerTest {
         result = controller.getLiveProjects();
 
         verify(manager).getLiveProjects();
-        assertEquals(result.getStatusCode(), HttpStatus.OK);
+        assertEquals(HttpStatus.OK, result.getStatusCode());
     }
 
     @Test
@@ -41,7 +41,7 @@ public class ProjectApiControllerTest {
         result = controller.getAllProject();
 
         verify(service).getAll();
-        assertEquals(result.getStatusCode(), HttpStatus.OK);
+        assertEquals(HttpStatus.OK, result.getStatusCode());
     }
 
     @Test
@@ -49,6 +49,6 @@ public class ProjectApiControllerTest {
         result = controller.getAllTemplates();
 
         verify(service).getAllTemplates();
-        assertEquals(result.getStatusCode(), HttpStatus.OK);
+        assertEquals(HttpStatus.OK, result.getStatusCode());
     }
 }

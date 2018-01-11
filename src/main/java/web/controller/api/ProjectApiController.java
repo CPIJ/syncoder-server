@@ -25,21 +25,21 @@ public class ProjectApiController {
 
     @RequestMapping(value = "/live")
     public ResponseEntity getLiveProjects() {
-        return Ok(projectManager.getLiveProjects());
+        return ok(projectManager.getLiveProjects());
     }
 
     @RequestMapping(value = "/all")
     public ResponseEntity<List<Project>> getAllProject() {
-        return Ok(service.getAll());
+        return ok(service.getAll());
     }
 
     @RequestMapping(value = "/template")
     public ResponseEntity getAllTemplates() {
-        return Ok(service.getAllTemplates());
+        return ok(service.getAllTemplates());
     }
 
     //region helper methods
-    private <T> ResponseEntity<T> Ok(T body) {
+    private <T> ResponseEntity<T> ok(T body) {
         return new ResponseEntity<>(body, HttpStatus.OK);
     }
     //endregion

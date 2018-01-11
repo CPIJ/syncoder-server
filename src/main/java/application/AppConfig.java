@@ -1,9 +1,9 @@
 package application;
 
 import data.repository.IAuthenticationRepository;
+import data.repository.IProjectRepository;
 import data.repository.MySqlAuthenticationRepository;
 import data.repository.MySqlProjectRepository;
-import data.repository.IProjectRepository;
 import data.service.*;
 import domain.IProjectManager;
 import domain.ProjectManager;
@@ -13,8 +13,6 @@ import org.springframework.context.annotation.Configuration;
 import rmi.fontys.RemotePublisher;
 
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 import java.sql.Connection;
 
 @Configuration

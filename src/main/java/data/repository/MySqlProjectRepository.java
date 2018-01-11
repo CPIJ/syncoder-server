@@ -10,6 +10,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Repository
 public class MySqlProjectRepository implements IProjectRepository {
@@ -34,7 +36,7 @@ public class MySqlProjectRepository implements IProjectRepository {
             rowsAffected = statement.executeUpdate();
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            Logger.getAnonymousLogger().log(Level.SEVERE, "an exception was thrown", e);
         }
 
         return rowsAffected > 0;
@@ -53,7 +55,7 @@ public class MySqlProjectRepository implements IProjectRepository {
             rowsAffected = statement.executeUpdate();
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            Logger.getAnonymousLogger().log(Level.SEVERE, "an exception was thrown", e);
         }
 
         return rowsAffected > 0;
@@ -64,16 +66,17 @@ public class MySqlProjectRepository implements IProjectRepository {
         try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM project WHERE id = ?")) {
             statement.setString(1, projectId);
 
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                Project project = new Project(resultSet.getString("id"));
-                project.setContent(resultSet.getString("content"));
-                project.setIsTemplate(resultSet.getBoolean("isTemplate"));
+            try(ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    Project project = new Project(resultSet.getString("id"));
+                    project.setContent(resultSet.getString("content"));
+                    project.setIsTemplate(resultSet.getBoolean("isTemplate"));
 
-                return project;
+                    return project;
+                }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            Logger.getAnonymousLogger().log(Level.SEVERE, "an exception was thrown", e);
         }
 
         return null;
@@ -84,17 +87,17 @@ public class MySqlProjectRepository implements IProjectRepository {
         List<Project> projects = new ArrayList<>();
 
         try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM project")) {
-            ResultSet result = statement.executeQuery();
+            try(ResultSet result = statement.executeQuery()) {
+                while (result.next()) {
+                    Project project = new Project(result.getString("id"));
+                    project.setContent(result.getString("content"));
+                    project.setIsTemplate(result.getBoolean("isTemplate"));
 
-            while (result.next()) {
-                Project project = new Project(result.getString("id"));
-                project.setContent(result.getString("content"));
-                project.setIsTemplate(result.getBoolean("isTemplate"));
-
-                projects.add(project);
+                    projects.add(project);
+                }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            Logger.getAnonymousLogger().log(Level.SEVERE, "an exception was thrown", e);
         }
 
         return projects;

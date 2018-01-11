@@ -61,7 +61,7 @@ public class ProjectManager implements IProjectManager {
         projects.put(project.getId(), project);
     }
 
-    void reset() {
+    static void reset() {
         projects = new HashMap<>();
     }
     //endregion

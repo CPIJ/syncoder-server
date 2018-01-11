@@ -21,7 +21,7 @@ public class ProjectManagerTest {
     public void before() {
         service = mock(IProjectService.class);
         projectManager = new ProjectManager(service);
-        projectManager.reset();
+        ProjectManager.reset();
 
         project = new Project("Test");
     }

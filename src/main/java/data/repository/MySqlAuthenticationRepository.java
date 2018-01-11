@@ -8,11 +8,17 @@ import org.springframework.stereotype.Repository;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Repository
 public class MySqlAuthenticationRepository implements IAuthenticationRepository {
 
     private Connection connection;
+    private static final String USERNAME = "username";
+    private static final String EMAIL = "email";
+    private static final String PASSWORD = "password";
+    private static final String IS_ADMIN = "isAdmin";
 
     @Autowired
     public MySqlAuthenticationRepository(Connection connection) {
@@ -27,18 +33,18 @@ public class MySqlAuthenticationRepository implements IAuthenticationRepository 
             statement.setString(1, email);
             statement.setString(2, password);
 
-            ResultSet set = statement.executeQuery();
-
-            if (set.next()) {
-                return new Client(
-                        set.getString("username"),
-                        set.getString("password"),
-                        set.getString("email"),
-                        set.getBoolean("isAdmin")
-                );
+            try (ResultSet set = statement.executeQuery()) {
+                if (set.next()) {
+                    return new Client(
+                            set.getString(USERNAME),
+                            set.getString(PASSWORD),
+                            set.getString(EMAIL),
+                            set.getBoolean(IS_ADMIN)
+                    );
+                }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            Logger.getAnonymousLogger().log(Level.SEVERE, "an exception was thrown", e);
         }
 
         return null;
@@ -57,6 +63,7 @@ public class MySqlAuthenticationRepository implements IAuthenticationRepository 
 
             affectedRows = statement.executeUpdate();
         } catch (SQLException e) {
+            Logger.getAnonymousLogger().log(Level.SEVERE, "an exception was thrown", e);
             return false;
         }
 
@@ -69,17 +76,17 @@ public class MySqlAuthenticationRepository implements IAuthenticationRepository 
         List<Account> accounts = new ArrayList<>();
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
-            ResultSet set = statement.executeQuery();
-
-            while (set.next()) {
-                accounts.add(new Account(
-                        set.getString("username"),
-                        set.getString("password"),
-                        set.getString("email"),
-                        set.getBoolean("isAdmin")));
+            try (ResultSet set = statement.executeQuery()) {
+                while (set.next()) {
+                    accounts.add(new Account(
+                            set.getString(USERNAME),
+                            set.getString(PASSWORD),
+                            set.getString(EMAIL),
+                            set.getBoolean(IS_ADMIN)));
+                }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            Logger.getAnonymousLogger().log(Level.SEVERE, "an exception was thrown", e);
         }
 
         return accounts;
@@ -92,17 +99,18 @@ public class MySqlAuthenticationRepository implements IAuthenticationRepository 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, email);
 
-            ResultSet set = statement.executeQuery();
+            try(ResultSet set = statement.executeQuery()) {
 
-            if (set.next()) {
-                return new Account(
-                        set.getString("username"),
-                        set.getString("password"),
-                        set.getString("email"),
-                        set.getBoolean("isAdmin"));
+                if (set.next()) {
+                    return new Account(
+                            set.getString(USERNAME),
+                            set.getString(PASSWORD),
+                            set.getString(EMAIL),
+                            set.getBoolean(IS_ADMIN));
+                }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            Logger.getAnonymousLogger().log(Level.SEVERE, "an exception was thrown", e);
         }
 
         return null;
