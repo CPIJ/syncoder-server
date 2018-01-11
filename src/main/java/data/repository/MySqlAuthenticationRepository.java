@@ -1,5 +1,6 @@
 package data.repository;
 
+import application.Properties;
 import domain.Account;
 import domain.Client;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +45,7 @@ public class MySqlAuthenticationRepository implements IAuthenticationRepository 
                 }
             }
         } catch (SQLException e) {
-            Logger.getAnonymousLogger().log(Level.SEVERE, "an exception was thrown", e);
+            Logger.getAnonymousLogger().log(Level.SEVERE, Properties.ERROR_MESSAGE, e);
         }
 
         return null;
@@ -63,7 +64,7 @@ public class MySqlAuthenticationRepository implements IAuthenticationRepository 
 
             affectedRows = statement.executeUpdate();
         } catch (SQLException e) {
-            Logger.getAnonymousLogger().log(Level.SEVERE, "an exception was thrown", e);
+            Logger.getAnonymousLogger().log(Level.SEVERE, Properties.ERROR_MESSAGE, e);
             return false;
         }
 
@@ -86,7 +87,7 @@ public class MySqlAuthenticationRepository implements IAuthenticationRepository 
                 }
             }
         } catch (SQLException e) {
-            Logger.getAnonymousLogger().log(Level.SEVERE, "an exception was thrown", e);
+            Logger.getAnonymousLogger().log(Level.SEVERE, Properties.ERROR_MESSAGE, e);
         }
 
         return accounts;
@@ -110,7 +111,7 @@ public class MySqlAuthenticationRepository implements IAuthenticationRepository 
                 }
             }
         } catch (SQLException e) {
-            Logger.getAnonymousLogger().log(Level.SEVERE, "an exception was thrown", e);
+            Logger.getAnonymousLogger().log(Level.SEVERE, Properties.ERROR_MESSAGE, e);
         }
 
         return null;

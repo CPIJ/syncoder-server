@@ -1,6 +1,5 @@
 package application;
 
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +15,8 @@ import java.util.logging.Logger;
 public class Properties {
 
     private final java.util.Properties props;
-    private final static String CS_KEY = "connectionStrings";
+    private static final String CONNECTION_STRINGS = "connectionStrings";
+    public static final String ERROR_MESSAGE = "an exception was thrown";
 
     @Autowired
     public Properties(java.util.Properties props) {
@@ -57,18 +57,18 @@ public class Properties {
     }
 
     Connection getProjectConnection() {
-        String dbUrl = get(CS_KEY, "project_database");
+        String dbUrl = get(CONNECTION_STRINGS, "project_database");
         return getConnection(dbUrl);
     }
 
     Connection getAuthConnection() {
-        String dbUrl = get(CS_KEY, "authentication_database");
+        String dbUrl = get(CONNECTION_STRINGS, "authentication_database");
         return getConnection(dbUrl);
     }
 
     private Connection getConnection(String dbUrl) {
-        String user = get(CS_KEY, "username");
-        String password = get(CS_KEY, "password");
+        String user = get(CONNECTION_STRINGS,"username");
+        String password = get(CONNECTION_STRINGS,"password");
 
         try {
             return DriverManager.getConnection(dbUrl, user, password);

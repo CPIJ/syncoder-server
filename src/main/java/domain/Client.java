@@ -30,8 +30,13 @@ public final class Client implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        return id.getClass() == obj.getClass()
-                && id.equals(obj);
+        if (!(obj instanceof Client)) {
+            return false;
+        }
+
+        Client c = (Client) obj;
+        return c.id.getClass() == id.getClass()
+                && c.id.equals(id);
     }
 
     //region getters & setters

@@ -3,6 +3,8 @@ package domain;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.UUID;
+
 import static org.junit.Assert.*;
 
 public class ClientTest {
@@ -25,6 +27,12 @@ public class ClientTest {
         client.removeWindow();
 
         assertEquals(0, client.getOpenWindows());
+    }
+
+    @Test
+    public void equals_isCalled_sameAsId() {
+        UUID id = client.getId();
+        assertTrue(client.getId().equals(id));
     }
 
 }

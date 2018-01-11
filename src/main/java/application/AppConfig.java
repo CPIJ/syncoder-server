@@ -12,9 +12,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import rmi.fontys.RemotePublisher;
 
+import javax.annotation.Generated;
 import java.rmi.RemoteException;
 import java.sql.Connection;
 
+@Generated(value = "")
 @Configuration
 public class AppConfig {
     @Bean

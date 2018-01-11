@@ -1,5 +1,6 @@
 package data.repository;
 
+import application.Properties;
 import domain.Project;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -36,7 +37,7 @@ public class MySqlProjectRepository implements IProjectRepository {
             rowsAffected = statement.executeUpdate();
 
         } catch (SQLException e) {
-            Logger.getAnonymousLogger().log(Level.SEVERE, "an exception was thrown", e);
+            Logger.getAnonymousLogger().log(Level.SEVERE, Properties.ERROR_MESSAGE, e);
         }
 
         return rowsAffected > 0;
@@ -55,7 +56,7 @@ public class MySqlProjectRepository implements IProjectRepository {
             rowsAffected = statement.executeUpdate();
 
         } catch (SQLException e) {
-            Logger.getAnonymousLogger().log(Level.SEVERE, "an exception was thrown", e);
+            Logger.getAnonymousLogger().log(Level.SEVERE, Properties.ERROR_MESSAGE, e);
         }
 
         return rowsAffected > 0;
@@ -76,7 +77,7 @@ public class MySqlProjectRepository implements IProjectRepository {
                 }
             }
         } catch (SQLException e) {
-            Logger.getAnonymousLogger().log(Level.SEVERE, "an exception was thrown", e);
+            Logger.getAnonymousLogger().log(Level.SEVERE, Properties.ERROR_MESSAGE, e);
         }
 
         return null;
@@ -97,7 +98,7 @@ public class MySqlProjectRepository implements IProjectRepository {
                 }
             }
         } catch (SQLException e) {
-            Logger.getAnonymousLogger().log(Level.SEVERE, "an exception was thrown", e);
+            Logger.getAnonymousLogger().log(Level.SEVERE, Properties.ERROR_MESSAGE, e);
         }
 
         return projects;

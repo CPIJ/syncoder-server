@@ -8,7 +8,6 @@ import org.springframework.stereotype.Controller;
 import rmi.fontys.IRemotePropertyListener;
 
 import java.beans.PropertyChangeEvent;
-import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
@@ -33,5 +32,10 @@ public class AuthenticationController extends UnicastRemoteObject implements IRe
     @Override
     public boolean equals(Object obj) {
         return super.equals(obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 }

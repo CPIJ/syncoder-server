@@ -11,6 +11,7 @@ import java.beans.PropertyChangeEvent;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -47,5 +48,12 @@ public class AuthenticationControllerTest {
         verify(template).convertAndSend(anyString(), any(StateChange.class));
     }
     //endregion
+
+    @Test
+    public void hashcode() {
+        int test = controller.hashCode();
+
+        assertEquals(test, controller.hashCode());
+    }
 
 }

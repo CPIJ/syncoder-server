@@ -58,7 +58,7 @@ public class AuthenticationApiController {
     public ResponseEntity register(@RequestBody Account account) {
         if (service.register(account)) {
             return ok(new Object() {
-                public final static String message = "You can now login with your new account!";
+                public final String message = "You can now login with your new account!";
             });
         }
 
