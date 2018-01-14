@@ -11,6 +11,7 @@ import java.beans.PropertyChangeEvent;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
+@SuppressWarnings("EmptyMethod")
 @Controller
 public class AuthenticationController extends UnicastRemoteObject implements IRemotePropertyListener {
 
@@ -20,7 +21,7 @@ public class AuthenticationController extends UnicastRemoteObject implements IRe
     public AuthenticationController(SimpMessagingTemplate template, IRmiService rmiService) throws RemoteException {
         super();
         this.template = template;
-        String property = new Properties(new java.util.Properties()).get("rmi", "registerProperty");
+        String property = new Properties().get("rmi", "registerProperty");
         rmiService.subscribe(property, this);
     }
 

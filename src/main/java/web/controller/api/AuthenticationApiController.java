@@ -50,7 +50,6 @@ public class AuthenticationApiController {
         if (account == null) return badRequest("No user found with this email.");
 
         return ok(new Object() {
-            public final String password = account.getPassword();
         });
     }
 
@@ -58,7 +57,6 @@ public class AuthenticationApiController {
     public ResponseEntity register(@RequestBody Account account) {
         if (service.register(account)) {
             return ok(new Object() {
-                public final String message = "You can now login with your new account!";
             });
         }
 

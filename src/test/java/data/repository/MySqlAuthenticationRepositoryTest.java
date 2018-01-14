@@ -1,6 +1,5 @@
 package data.repository;
 
-import data.service.IAuthenticationService;
 import domain.Account;
 import domain.Client;
 import org.junit.Before;
@@ -82,6 +81,16 @@ public class MySqlAuthenticationRepositoryTest {
         Account account = new Account("test", "test", "test", false);
         when(connection.prepareStatement(anyString())).thenReturn(statement);
         when(statement.executeUpdate()).thenThrow(SQLIntegrityConstraintViolationException.class);
+
+        Boolean result = repository.register(account);
+
+        assertFalse(result);
+    }
+
+    @Test()
+    public void register_cannotCreateQuery_throwsErrorReturnsFalse() throws SQLException {
+        Account account = new Account("test", "test", "test", false);
+        when(connection.prepareStatement(anyString())).thenThrow(SQLException.class);
 
         Boolean result = repository.register(account);
 

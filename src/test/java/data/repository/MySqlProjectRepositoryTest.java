@@ -1,6 +1,5 @@
 package data.repository;
 
-import application.Properties;
 import domain.Project;
 import org.junit.Before;
 import org.junit.Test;

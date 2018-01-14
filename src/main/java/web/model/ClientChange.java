@@ -4,12 +4,9 @@ import java.util.UUID;
 
 public class ClientChange {
 
-    private UUID clientId;
-    private String email;
-    private String projectId;
-
-    public ClientChange() {
-    }
+    private final UUID clientId;
+    private final String email;
+    private final String projectId;
 
     public ClientChange(UUID clientId, String email, String projectId) {
         this.clientId = clientId;

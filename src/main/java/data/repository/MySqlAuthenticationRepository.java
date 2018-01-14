@@ -3,6 +3,7 @@ package data.repository;
 import application.Properties;
 import domain.Account;
 import domain.Client;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -15,7 +16,7 @@ import java.util.logging.Logger;
 @Repository
 public class MySqlAuthenticationRepository implements IAuthenticationRepository {
 
-    private Connection connection;
+    private final Connection connection;
     private static final String USERNAME = "username";
     private static final String EMAIL = "email";
     private static final String PASSWORD = "password";
@@ -64,7 +65,7 @@ public class MySqlAuthenticationRepository implements IAuthenticationRepository 
 
             affectedRows = statement.executeUpdate();
         } catch (SQLException e) {
-            Logger.getAnonymousLogger().log(Level.SEVERE, Properties.ERROR_MESSAGE, e);
+            LoggerFactory.getLogger(getClass()).error(Properties.ERROR_MESSAGE, e);
             return false;
         }
 

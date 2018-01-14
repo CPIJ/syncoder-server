@@ -58,7 +58,7 @@ public class RmiService implements IRmiService {
     @Override
     public boolean inform(String property, Object data) {
         try {
-            RemotePublisher publisher = (RemotePublisher) this.registry.lookup(new Properties().get(FROM, "registerPublisher"));
+            RemotePublisher publisher = (RemotePublisher) this.registry.lookup(new Properties().get(FROM, PUBLISHER));
             publisher.inform(property, data, data);
 
             return true;
