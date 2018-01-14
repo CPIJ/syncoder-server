@@ -3,7 +3,7 @@ package web.model;
 import domain.Client;
 import domain.Project;
 
-public class StateChange {
+public final class StateChange {
     private Project project;
     private Client sender;
 

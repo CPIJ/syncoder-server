@@ -2,11 +2,15 @@ package web.model;
 
 import java.util.UUID;
 
-public class ClientChange {
+public final class ClientChange {
 
-    private final UUID clientId;
-    private final String email;
-    private final String projectId;
+    private UUID clientId;
+    private String email;
+    private String projectId;
+
+    public ClientChange() {
+
+    }
 
     public ClientChange(UUID clientId, String email, String projectId) {
         this.clientId = clientId;
@@ -17,9 +21,11 @@ public class ClientChange {
     public UUID getClientId() {
         return clientId;
     }
+
     public String getEmail() {
         return email;
     }
+
     public String getProjectId() {
         return projectId;
     }

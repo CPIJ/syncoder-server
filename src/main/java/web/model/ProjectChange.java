@@ -2,10 +2,14 @@ package web.model;
 
 import java.util.UUID;
 
-public class ProjectChange {
-    private final String id;
-    private final String content;
-    private final UUID clientId;
+public final class ProjectChange {
+    private  String id;
+    private  String content;
+    private  UUID clientId;
+
+    public ProjectChange() {
+
+    }
 
     public ProjectChange(String id, String content, UUID clientId) {
         this.id = id;
