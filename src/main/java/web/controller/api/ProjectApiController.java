@@ -38,6 +38,23 @@ public class ProjectApiController {
         return ok(service.getAllTemplates());
     }
 
+    @RequestMapping(value = "/reset")
+    public ResponseEntity reset() {
+        if (projectManager.getLiveProjects().isEmpty()) {
+            return ResponseEntity.ok("There were no projects to unload.");
+        }
+
+        projectManager
+                .getLiveProjects()
+                .forEach(projectManager::unload);
+
+        if (!projectManager.getLiveProjects().isEmpty()) {
+            return ResponseEntity.badRequest().body("Could not unload projects.");
+        }
+
+        return ResponseEntity.ok("Successfully unloaded all projects");
+    }
+
     //region helper methods
     private <T> ResponseEntity<T> ok(T body) {
         return new ResponseEntity<>(body, HttpStatus.OK);

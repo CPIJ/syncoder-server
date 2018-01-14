@@ -16,7 +16,6 @@ import javax.annotation.Generated;
 import java.rmi.RemoteException;
 import java.sql.Connection;
 
-@Generated(value = "")
 @Configuration
 public class AppConfig {
     @Bean

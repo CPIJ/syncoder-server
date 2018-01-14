@@ -34,5 +34,4 @@ public class ClientTest {
         UUID id = client.getId();
         assertTrue(client.getId().equals(id));
     }
-
 }

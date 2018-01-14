@@ -6,7 +6,6 @@ import org.springframework.context.annotation.ComponentScan;
 
 import javax.annotation.Generated;
 
-@Generated(value = "")
 @SpringBootApplication
 @ComponentScan("web")
 @ComponentScan("application")
