@@ -1,5 +1,6 @@
 package web.controller.api;
 
+import com.sun.deploy.net.HttpResponse;
 import data.service.IAuthenticationService;
 import domain.Account;
 import domain.Client;
@@ -8,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import web.model.LoginRequest;
+import web.model.ResponseMessage;
 
 @RestController
 @RequestMapping("/authentication")
@@ -23,13 +25,13 @@ public class AuthenticationApiController {
     @RequestMapping(value = "/", method = RequestMethod.POST, consumes = "application/json")
     public ResponseEntity login(@RequestBody LoginRequest request) {
         if (request.getPassword() == null || request.getEmail() == null) {
-            return badRequest("No username and/or password provided!");
+            return badRequest(new ResponseMessage("No username and/or password provided!"));
         }
 
         Client client = service.login(request.getEmail(), request.getPassword());
 
         if (client == null) {
-            return badRequest("No user found with this combination of username and password.");
+            return badRequest(new ResponseMessage("No user found with this combination of username and password."));
         }
 
         return ok(client);
@@ -44,23 +46,21 @@ public class AuthenticationApiController {
 
     @RequestMapping(value = "/forgotPassword", method = RequestMethod.GET)
     public ResponseEntity<Object> forgotPassword(@RequestParam String email) {
-        if (email == null) return badRequest("No email provided!");
+        if (email == null) return badRequest(new ResponseMessage("No email provided!"));
         Account account = service.find(email);
 
-        if (account == null) return badRequest("No user found with this email.");
+        if (account == null) return badRequest(new ResponseMessage("No user found with this email."));
 
-        return ok(new Object() {
-        });
+        return ResponseEntity.ok(new ResponseMessage("This is your password: " + account.getPassword()));
     }
 
     @RequestMapping(value = "/", method = RequestMethod.PUT, consumes = "application/json")
     public ResponseEntity register(@RequestBody Account account) {
         if (service.register(account)) {
-            return ok(new Object() {
-            });
+            return ResponseEntity.ok(new ResponseMessage("You can now login with your new account."));
         }
 
-        return badRequest("An account with this email already exists.");
+        return badRequest(new ResponseMessage("An account with this email already exists."));
     }
 
     @RequestMapping(value = "/account/all", method = RequestMethod.GET)
