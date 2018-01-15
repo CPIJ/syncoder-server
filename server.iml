@@ -109,5 +109,6 @@
     <orderEntry type="library" name="Maven: org.apache.maven.shared:maven-filtering:3.1.1" level="project" />
     <orderEntry type="library" name="Maven: org.sonatype.plexus:plexus-build-api:0.0.7" level="project" />
     <orderEntry type="library" name="Maven: org.apache.maven.shared:maven-mapping:3.0.0" level="project" />
+    <orderEntry type="library" name="Maven: com.oracle.java:jre:1.8.0_131" level="project" />
   </component>
 </module>
