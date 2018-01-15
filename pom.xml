@@ -80,8 +80,6 @@
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
-                    <fork>true</fork>
-                    <executable>D:\Program Files\Java\jdk1.8.0_144\bin\javac</executable>
                 </configuration>
             </plugin>
         </plugins>
@@ -103,7 +101,7 @@
             </build>
         </profile>
     </profiles>
-    
+
     <repositories>
         <repository>
             <id>myMavenRepo.read</id>
