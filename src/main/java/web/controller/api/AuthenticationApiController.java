@@ -1,6 +1,5 @@
 package web.controller.api;
 
-import com.sun.deploy.net.HttpResponse;
 import data.service.IAuthenticationService;
 import domain.Account;
 import domain.Client;
